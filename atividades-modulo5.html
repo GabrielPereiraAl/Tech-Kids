@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atividades — Módulo 5: Inteligência Artificial - TechKids</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amarelo: #FFD93D;
+    --laranja: #FF6B35;
+    --verde: #06D6A0;
+    --azul: #118AB2;
+    --roxo: #845EC2;
+    --rosa: #FF6B9D;
+    --fundo: #FFF9F0;
+    --escuro: #1A1A2E;
+    --card-shadow: 0 6px 0 rgba(0,0,0,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--fundo); color: var(--escuro); }
+
+  nav {
+    background: var(--escuro); padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 0 var(--amarelo);
+  }
+  .logo { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; color: var(--amarelo); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; }
+  .logo span { color: var(--verde); }
+  .nav-links { display: flex; gap: 0.5rem; }
+  .nav-links a { color: white; text-decoration: none; font-weight: 700; padding: 0.4rem 1rem; border-radius: 20px; transition: all 0.2s; font-size: 0.95rem; }
+  .nav-links a:hover { background: var(--amarelo); color: var(--escuro); }
+  .nav-links a.active { background: var(--laranja); color: white; }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--rosa), var(--roxo));
+    color: white; text-align: center; padding: 3rem 2rem;
+  }
+  .page-header h1 { font-family: 'Baloo 2', cursive; font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .page-header p { font-size: 1.1rem; opacity: 0.9; }
+
+  .scoreboard {
+    background: var(--escuro); color: white;
+    display: flex; justify-content: center; gap: 3rem; padding: 1rem 2rem;
+    flex-wrap: wrap;
+  }
+  .score-item { text-align: center; }
+  .score-num { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 800; color: var(--amarelo); line-height: 1; }
+  .score-label { font-size: 0.8rem; opacity: 0.7; }
+
+  .activities-container { max-width: 860px; margin: 0 auto; padding: 2rem; }
+
+  .module-header {
+    background: white; border-radius: 20px; padding: 1.5rem 2rem;
+    border: 3px solid var(--escuro); box-shadow: var(--card-shadow);
+    margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .module-header-icon { font-size: 3rem; }
+  .module-header h2 { font-family: 'Baloo 2', cursive; font-size: 1.6rem; font-weight: 800; }
+  .module-header p { color: #666; font-size: 0.95rem; }
+
+  .activity-card {
+    background: white; border-radius: 20px; padding: 2rem;
+    border: 3px solid var(--escuro); box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+  }
+  .activity-title {
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800;
+    margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .activity-subtitle { color: #888; font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+  .quiz-question {
+    background: var(--fundo); border-radius: 14px; padding: 1.2rem;
+    margin-bottom: 1.2rem; border: 2px solid #e8e8e8;
+  }
+  .quiz-question p { font-weight: 700; font-size: 1rem; margin-bottom: 1rem; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option-btn {
+    background: white; border: 2px solid #ddd; border-radius: 10px;
+    padding: 0.7rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; text-align: left;
+    transition: all 0.2s; display: flex; align-items: center; gap: 0.6rem;
+  }
+  .option-btn:hover:not(:disabled), .option-btn:active:not(:disabled) { border-color: var(--rosa); background: #fff0f7; transform: translateX(4px); }
+  .option-btn.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+  .option-btn.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+  .option-btn:disabled { cursor: not-allowed; }
+  .option-letter {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--escuro); color: var(--amarelo);
+    font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .feedback {
+    display: none; margin-top: 0.8rem; padding: 0.8rem 1rem;
+    border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+    animation: fadeIn 0.3s ease;
+  }
+  .feedback.show { display: flex; align-items: center; gap: 0.5rem; }
+  .feedback.correct-fb { background: #d4edda; color: #155724; border: 2px solid #28a745; }
+  .feedback.wrong-fb { background: #f8d7da; color: #721c24; border: 2px solid #dc3545; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .tf-options { display: flex; gap: 1rem; }
+  .tf-btn {
+    flex: 1; padding: 0.8rem; border-radius: 12px; font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem; font-weight: 700; cursor: pointer; border: 3px solid var(--escuro);
+    transition: all 0.2s; background: white;
+  }
+  .tf-btn:hover:not(:disabled), .tf-btn:active:not(:disabled) { transform: translateY(-3px); }
+  .tf-btn.verdadeiro { background: #E8FFF5; }
+  .tf-btn.falso { background: #FFF0F0; }
+  .tf-btn.correct { background: #28a745; color: white; border-color: #1e7e34; }
+  .tf-btn.wrong { background: #dc3545; color: white; border-color: #c82333; }
+  .tf-btn:disabled { cursor: not-allowed; }
+
+  .match-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .match-col h6 { font-weight: 800; margin-bottom: 0.8rem; font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+  .match-item {
+    background: var(--fundo); border: 2px solid #ddd; border-radius: 10px;
+    padding: 0.7rem 1rem; margin-bottom: 0.6rem; cursor: pointer;
+    font-weight: 600; font-size: 0.9rem; transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .match-item:hover, .match-item:active { border-color: var(--rosa); }
+  .match-item.selected { border-color: var(--rosa); background: #fff0f7; }
+  .match-item.matched-correct { border-color: #28a745; background: #d4edda; color: #155724; }
+  .match-item.matched-wrong { border-color: #dc3545; background: #f8d7da; color: #721c24; animation: shake 0.4s ease; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .medal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .medal-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+  .medal-modal {
+    background: white; border-radius: 28px; padding: 3rem 2.5rem;
+    border: 4px solid var(--escuro); box-shadow: 0 12px 0 rgba(0,0,0,0.2);
+    text-align: center; max-width: 400px; width: 90%;
+    animation: bounceIn 0.5s ease;
+  }
+  @keyframes bounceIn { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+  .medal-emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: spin 0.6s ease; }
+  @keyframes spin { from{transform:rotate(-20deg) scale(0.5)} to{transform:rotate(0deg) scale(1)} }
+  .medal-modal h2 { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .medal-modal p { color: #555; font-size: 1rem; line-height: 1.5; margin-bottom: 1.5rem; }
+  .medal-name-badge {
+    display: inline-block; background: var(--amarelo); color: var(--escuro);
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+    padding: 0.4rem 1.4rem; border-radius: 30px; border: 3px solid var(--escuro);
+    margin-bottom: 1.5rem;
+  }
+  .modal-btns { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+  .btn-modal-close {
+    background: var(--verde); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.8rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #04a07a; transition: all 0.2s;
+  }
+  .btn-modal-close:hover { transform: translateY(-2px); }
+  .btn-modal-conquistas {
+    background: var(--roxo); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.8rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #5e3d9e; transition: all 0.2s; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .btn-modal-conquistas:hover { transform: translateY(-2px); }
+
+  footer {
+    background: var(--escuro); color: rgba(255,255,255,0.7);
+    text-align: center; padding: 2rem; font-size: 0.9rem; margin-top: 3rem;
+  }
+  footer strong { color: var(--amarelo); }
+
+  /* === HAMBURGER MENU === */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 0.5rem;
+  }
+  .hamburger span {
+    display: block; width: 26px; height: 3px;
+    background: white; border-radius: 3px; transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  @media (max-width: 600px) {
+    .hamburger { display: flex; }
+    .nav-links {
+      display: none; position: absolute; top: 70px; left: 0; right: 0;
+      background: var(--escuro); flex-direction: column; align-items: stretch;
+      padding: 0.8rem; gap: 0.3rem;
+      border-top: 3px solid var(--amarelo); box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 99;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: block; padding: 0.8rem 1rem; border-radius: 12px; font-size: 1rem; }
+    .match-container { grid-template-columns: 1fr; }
+    .tf-options { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">🖥️ Tech<span>Kids</span></a>
+  <button class="hamburger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-links">
+    <a href="index.html">🏠 Início</a>
+    <a href="aulas.html">📚 Aulas</a>
+    <a href="atividades.html" class="active">🎮 Atividades</a>
+    <a href="glossario.html">📖 Glossário</a>
+    <a href="conquistas.html">🏆 Conquistas</a>
+    <a href="sobre.html">ℹ️ Sobre</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>🤖 Módulo 5 — Inteligência Artificial</h1>
+  <p>Teste seus conhecimentos e ganhe medalhas!</p>
+</div>
+
+<div class="scoreboard">
+  <div class="score-item">
+    <div class="score-num" id="total-score">0</div>
+    <div class="score-label">Pontos</div>
+  </div>
+  <div class="score-item">
+    <div class="score-num" id="correct-count">0</div>
+    <div class="score-label">Acertos</div>
+  </div>
+  <div class="score-item">
+    <div class="score-num" id="medal-count">0</div>
+    <div class="score-label">Medalhas</div>
+  </div>
+</div>
+
+<div class="activities-container">
+  <div class="module-header">
+    <div class="module-header-icon">🤖</div>
+    <div>
+      <h2>Módulo 5 — Inteligência Artificial</h2>
+      <p>Mostre que você entende o futuro da tecnologia!</p>
+    </div>
+  </div>
+
+  <!-- Atividade 5.1 - Quiz -->
+  <div class="activity-card">
+    <div class="activity-title">🎯 Quiz — Inteligência Artificial</div>
+    <div class="activity-subtitle">Múltipla escolha • 5 questões • 10 pontos cada</div>
+
+    <div class="quiz-question" id="q5_1">
+      <p>1. O que é Inteligência Artificial (IA)?</p>
+      <div class="options">
+        <button class="option-btn" onclick="checkQuiz(this,'q5_1','B')"><span class="option-letter">A</span> Um robô que faz tarefas domésticas</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_1','B')"><span class="option-letter">B</span> Um sistema que aprende com dados e toma decisões</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_1','B')"><span class="option-letter">C</span> Um videogame muito avançado</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_1','B')"><span class="option-letter">D</span> Um tipo de vírus de computador</button>
+      </div>
+      <div class="feedback" id="fb_q5_1"></div>
+    </div>
+
+    <div class="quiz-question" id="q5_2">
+      <p>2. Como a IA aprende a reconhecer imagens, como fotos de gatos?</p>
+      <div class="options">
+        <button class="option-btn" onclick="checkQuiz(this,'q5_2','C')"><span class="option-letter">A</span> Alguém desenha cada imagem para ela</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_2','C')"><span class="option-letter">B</span> Ela vai à escola igual às crianças</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_2','C')"><span class="option-letter">C</span> Analisando muitos exemplos até aprender sozinha</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_2','C')"><span class="option-letter">D</span> Copiando o que um humano faz em tempo real</button>
+      </div>
+      <div class="feedback" id="fb_q5_2"></div>
+    </div>
+
+    <div class="quiz-question" id="q5_3">
+      <p>3. Qual destes é um exemplo de IA no dia a dia?</p>
+      <div class="options">
+        <button class="option-btn" onclick="checkQuiz(this,'q5_3','A')"><span class="option-letter">A</span> Um app que recomenda músicas que você vai gostar</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_3','A')"><span class="option-letter">B</span> Uma calculadora que faz somas simples</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_3','A')"><span class="option-letter">C</span> Um relógio que marca as horas</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_3','A')"><span class="option-letter">D</span> Uma lâmpada que acende ao ligar o interruptor</button>
+      </div>
+      <div class="feedback" id="fb_q5_3"></div>
+    </div>
+
+    <div class="quiz-question" id="q5_4">
+      <p>4. O que é IA Generativa?</p>
+      <div class="options">
+        <button class="option-btn" onclick="checkQuiz(this,'q5_4','D')"><span class="option-letter">A</span> Uma IA que só faz cálculos matemáticos</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_4','D')"><span class="option-letter">B</span> Uma IA que controla fábricas</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_4','D')"><span class="option-letter">C</span> Uma IA que detecta vírus no computador</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_4','D')"><span class="option-letter">D</span> Uma IA que cria textos, imagens e músicas novas</button>
+      </div>
+      <div class="feedback" id="fb_q5_4"></div>
+    </div>
+
+    <div class="quiz-question" id="q5_5">
+      <p>5. O que devemos fazer antes de acreditar em informações geradas por IA?</p>
+      <div class="options">
+        <button class="option-btn" onclick="checkQuiz(this,'q5_5','B')"><span class="option-letter">A</span> Compartilhar imediatamente com os amigos</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_5','B')"><span class="option-letter">B</span> Verificar se a informação é verdadeira em outras fontes</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_5','B')"><span class="option-letter">C</span> Confiar sempre, pois a IA nunca erra</button>
+        <button class="option-btn" onclick="checkQuiz(this,'q5_5','B')"><span class="option-letter">D</span> Imprimir e guardar como documento oficial</button>
+      </div>
+      <div class="feedback" id="fb_q5_5"></div>
+    </div>
+  </div>
+
+  <!-- Atividade 5.2 - Correspondência -->
+  <div class="activity-card">
+    <div class="activity-title">🔗 Combine a IA com seu uso!</div>
+    <div class="activity-subtitle">Ligue o exemplo de IA à sua função • 4 pares</div>
+    <div class="match-container">
+      <div class="match-col">
+        <h6>Exemplo de IA</h6>
+        <div class="match-item" data-match="left" data-id="assistente" onclick="selectMatch(this)">🔊 Assistente de voz</div>
+        <div class="match-item" data-match="left" data-id="recomendacao" onclick="selectMatch(this)">🎵 Recomendação</div>
+        <div class="match-item" data-match="left" data-id="traducao" onclick="selectMatch(this)">🌐 Tradutor automático</div>
+        <div class="match-item" data-match="left" data-id="gerativa" onclick="selectMatch(this)">🖼️ IA Generativa</div>
+      </div>
+      <div class="match-col">
+        <h6>Para que serve</h6>
+        <div class="match-item" data-match="right" data-id="gerativa" onclick="selectMatch(this)">Criar imagens, textos e músicas</div>
+        <div class="match-item" data-match="right" data-id="assistente" onclick="selectMatch(this)">Responder perguntas por voz</div>
+        <div class="match-item" data-match="right" data-id="traducao" onclick="selectMatch(this)">Converter um idioma em outro</div>
+        <div class="match-item" data-match="right" data-id="recomendacao" onclick="selectMatch(this)">Sugerir músicas ou filmes</div>
+      </div>
+    </div>
+    <div id="match5-result" style="margin-top:1rem;font-weight:700;"></div>
+  </div>
+
+  <!-- Atividade 5.3 - Verdadeiro ou Falso -->
+  <div class="activity-card">
+    <div class="activity-title">✅ Verdadeiro ou Falso? — IA</div>
+    <div class="activity-subtitle">5 questões • 8 pontos cada</div>
+
+    <div class="quiz-question" id="tf5_1">
+      <p>1. A IA aprende analisando grandes quantidades de dados?</p>
+      <div class="tf-options">
+        <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf5_1',true)">👍 Verdadeiro</button>
+        <button class="tf-btn falso" onclick="checkTF(this,'tf5_1',true)">👎 Falso</button>
+      </div>
+      <div class="feedback" id="fb_tf5_1"></div>
+    </div>
+
+    <div class="quiz-question" id="tf5_2">
+      <p>2. A IA sempre acerta e nunca comete erros?</p>
+      <div class="tf-options">
+        <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf5_2',false)">👍 Verdadeiro</button>
+        <button class="tf-btn falso" onclick="checkTF(this,'tf5_2',false)">👎 Falso</button>
+      </div>
+      <div class="feedback" id="fb_tf5_2"></div>
+    </div>
+
+    <div class="quiz-question" id="tf5_3">
+      <p>3. Filtros de beleza em selfies usam Inteligência Artificial?</p>
+      <div class="tf-options">
+        <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf5_3',true)">👍 Verdadeiro</button>
+        <button class="tf-btn falso" onclick="checkTF(this,'tf5_3',true)">👎 Falso</button>
+      </div>
+      <div class="feedback" id="fb_tf5_3"></div>
+    </div>
+
+    <div class="quiz-question" id="tf5_4">
+      <p>4. Podemos compartilhar dados pessoais (nome, endereço) com qualquer IA sem problema?</p>
+      <div class="tf-options">
+        <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf5_4',false)">👍 Verdadeiro</button>
+        <button class="tf-btn falso" onclick="checkTF(this,'tf5_4',false)">👎 Falso</button>
+      </div>
+      <div class="feedback" id="fb_tf5_4"></div>
+    </div>
+
+    <div class="quiz-question" id="tf5_5">
+      <p>5. A IA Generativa pode criar imagens, músicas e textos do zero?</p>
+      <div class="tf-options">
+        <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf5_5',true)">👍 Verdadeiro</button>
+        <button class="tf-btn falso" onclick="checkTF(this,'tf5_5',true)">👎 Falso</button>
+      </div>
+      <div class="feedback" id="fb_tf5_5"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:2rem 0;">
+    <a href="atividades-modulo4.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:white;color:var(--escuro);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.12);">← Atividade anterior</a>
+    <a href="aulas-modulo5.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--rosa);color:white;border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 #c43d75;">📚 Estudar este Módulo</a>
+    <a href="atividades.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--escuro);color:var(--amarelo);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.2);">🎮 Todas as Atividades</a>
+  </div>
+</div>
+
+<div class="medal-overlay" id="medalOverlay">
+  <div class="medal-modal">
+    <span class="medal-emoji" id="modalEmoji">🏅</span>
+    <h2>Medalha Conquistada!</h2>
+    <p id="modalDesc">Você completou o desafio com sucesso!</p>
+    <div class="medal-name-badge" id="modalMedalName">🏆 Medalha</div>
+    <div class="modal-btns">
+      <button class="btn-modal-close" onclick="closeMedalModal()">🎉 Continuar!</button>
+      <a href="conquistas.html" class="btn-modal-conquistas">🏆 Ver Conquistas</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>🖥️ <strong>TechKids</strong> • 2025</p>
+</footer>
+
+<script>
+  const _saved = JSON.parse(localStorage.getItem('techkids') || '{}');
+  let totalScore   = _saved.totalScore   || 0;
+  let correctCount = _saved.correctCount || 0;
+  let medalCount   = (_saved.medals || []).length;
+  const answeredQuestions = new Set(_saved.answeredQuestions || []);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('total-score').textContent   = totalScore;
+    document.getElementById('correct-count').textContent = correctCount;
+    document.getElementById('medal-count').textContent   = medalCount;
+    answeredQuestions.forEach(qId => restoreAnswered(qId));
+
+    const _earned = new Set((_saved.medals || []).map(m => m.name));
+    Object.entries(quizGroups).forEach(([gKey, ids]) => {
+      const def = medalDefs[gKey];
+      if (def && _earned.has(def.name))
+        ids.forEach(qId => { if (!answeredQuestions.has(qId)) revealCorrectAnswer(qId, gKey); });
+    });
+    if (_earned.has(medalDefs['match_5'].name)) revealMatchPairs('match5-result');
+  });
+
+  const medalDefs = {
+    quiz_5:  { emoji: '🤖', name: 'Especialista em IA',   desc: 'Você acertou todas as perguntas do Quiz do Módulo 5!' },
+    tf_5:    { emoji: '💡', name: 'Pensador do Futuro',    desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 5!' },
+    match_5: { emoji: '🚀', name: 'Explorador Digital',   desc: 'Você combinou todos os usos de IA corretamente!' },
+  };
+
+  const quizGroups = {
+    quiz_5: ['q5_1','q5_2','q5_3','q5_4','q5_5'],
+    tf_5:   ['tf5_1','tf5_2','tf5_3','tf5_4','tf5_5'],
+  };
+
+  const groupCorrect = {};
+  Object.keys(quizGroups).forEach(g => groupCorrect[g] = 0);
+
+  function updateScore(pts) {
+    totalScore += pts;
+    if (pts > 0) correctCount++;
+    document.getElementById('total-score').textContent = totalScore;
+    document.getElementById('correct-count').textContent = correctCount;
+    saveProgress();
+  }
+
+  function saveProgress(qId, answerInfo) {
+    const data = JSON.parse(localStorage.getItem('techkids') || '{}');
+    data.totalScore        = totalScore;
+    data.correctCount      = correctCount;
+    data.medalCount        = medalCount;
+    data.medals            = data.medals || [];
+    data.answeredQuestions = [...answeredQuestions];
+    if (qId && answerInfo) {
+      data.answers = data.answers || {};
+      data.answers[qId] = answerInfo;
+    }
+    localStorage.setItem('techkids', JSON.stringify(data));
+  }
+
+  function restoreAnswered(qId) {
+    const container = document.getElementById(qId);
+    if (!container) return;
+    container.querySelectorAll('button').forEach(b => b.disabled = true);
+    const saved = JSON.parse(localStorage.getItem('techkids') || '{}');
+    const info = (saved.answers || {})[qId];
+    const fb = document.getElementById('fb_' + qId);
+    if (info && info.correct) {
+      if (info.type === 'quiz') {
+        const letters = ['A','B','C','D'];
+        container.querySelectorAll('.option-btn').forEach((b, i) => { if (letters[i] === info.correctKey) b.classList.add('correct'); });
+      } else if (info.type === 'tf') {
+        container.querySelectorAll('.tf-btn').forEach(b => { if (b.classList.contains('verdadeiro') === info.correctKey) b.classList.add('correct'); });
+      }
+      if (fb) { fb.className = 'feedback correct-fb show'; fb.innerHTML = '✅ Você acertou esta questão!'; }
+    } else if (info && !info.correct) {
+      if (info.type === 'quiz') {
+        const letters = ['A','B','C','D'];
+        container.querySelectorAll('.option-btn').forEach((b, i) => {
+          if (letters[i] === info.chosenKey) b.classList.add('wrong');
+          if (letters[i] === info.correctKey) b.classList.add('correct');
+        });
+      } else if (info.type === 'tf') {
+        container.querySelectorAll('.tf-btn').forEach(b => {
+          const isVerd = b.classList.contains('verdadeiro');
+          if (isVerd === info.chosenKey) b.classList.add('wrong');
+          if (isVerd === info.correctKey) b.classList.add('correct');
+        });
+      }
+      if (fb) { fb.className = 'feedback wrong-fb show'; fb.innerHTML = `❌ Você errou. A resposta correta está destacada em verde. <a href="aulas-modulo5.html" style="color:#721c24;font-weight:800;text-decoration:underline;">📚 Estudar: IA</a>`; }
+    } else {
+      if (fb) { fb.className = 'feedback show'; fb.style.cssText = 'background:#f0f0f0;border-color:#ccc;color:#666;display:flex;align-items:center;gap:0.5rem;'; fb.innerHTML = '🔒 Questão já respondida.'; }
+    }
+  }
+
+  function revealCorrectAnswer(qId, groupKey) {
+    const container = document.getElementById(qId);
+    if (!container) return;
+    container.querySelectorAll('button').forEach(b => b.disabled = true);
+    const fb = document.getElementById('fb_' + qId);
+    if (groupKey.startsWith('quiz_')) {
+      const btns = container.querySelectorAll('.option-btn');
+      const m = (btns[0]?.getAttribute('onclick') || '').match(/'([A-D])'\)/);
+      if (!m) return;
+      const letters = ['A','B','C','D'];
+      btns.forEach((b, i) => { if (letters[i] === m[1]) b.classList.add('correct'); });
+    } else if (groupKey.startsWith('tf_')) {
+      const btns = container.querySelectorAll('.tf-btn');
+      const m = (btns[0]?.getAttribute('onclick') || '').match(/,(true|false)\)/);
+      if (!m) return;
+      const correctAnswer = m[1] === 'true';
+      btns.forEach(b => { if (b.classList.contains('verdadeiro') === correctAnswer) b.classList.add('correct'); });
+    }
+    if (fb) { fb.className = 'feedback correct-fb show'; fb.innerHTML = '🔍 Revisão: resposta correta destacada em verde.'; }
+  }
+
+  function revealMatchPairs(resultId) {
+    const resultEl = document.getElementById(resultId);
+    if (!resultEl) return;
+    const container = resultEl.previousElementSibling;
+    if (!container || !container.classList.contains('match-container')) return;
+    container.querySelectorAll('[data-match="left"]').forEach(left => {
+      const right = container.querySelector(`[data-match="right"][data-id="${left.dataset.id}"]`);
+      if (right) {
+        left.classList.add('matched-correct'); right.classList.add('matched-correct');
+        left.style.pointerEvents = 'none'; right.style.pointerEvents = 'none';
+      }
+    });
+    resultEl.innerHTML = '🏆 Você já conquistou esta medalha! Confira os pares corretos acima.';
+    resultEl.style.color = '#28a745';
+  }
+
+  function awardMedal(key) {
+    const def = medalDefs[key];
+    if (!def) return;
+    const data = JSON.parse(localStorage.getItem('techkids') || '{}');
+    data.medals = data.medals || [];
+    if (data.medals.find(m => m.name === def.name)) return;
+    data.medals.push({ ...def, date: new Date().toLocaleDateString('pt-BR') });
+    data.medalCount = data.medals.length;
+    localStorage.setItem('techkids', JSON.stringify(data));
+    medalCount++;
+    document.getElementById('medal-count').textContent = medalCount;
+    document.getElementById('modalEmoji').textContent     = def.emoji;
+    document.getElementById('modalMedalName').textContent = def.emoji + ' ' + def.name;
+    document.getElementById('modalDesc').textContent      = def.desc;
+    document.getElementById('medalOverlay').classList.add('show');
+  }
+
+  function closeMedalModal() { document.getElementById('medalOverlay').classList.remove('show'); }
+  document.getElementById('medalOverlay').addEventListener('click', function(e) { if (e.target === this) closeMedalModal(); });
+
+  function checkGroupComplete(questionId) {
+    for (const [groupKey, ids] of Object.entries(quizGroups)) {
+      if (!ids.includes(questionId)) continue;
+      const allAnswered = ids.every(id => answeredQuestions.has(id));
+      if (!allAnswered) return;
+      if (groupCorrect[groupKey] === ids.length) setTimeout(() => awardMedal(groupKey), 600);
+    }
+  }
+
+  function checkQuiz(btn, questionId, correctLetter) {
+    const container = document.getElementById(questionId);
+    const buttons   = container.querySelectorAll('.option-btn');
+    const letters   = ['A','B','C','D'];
+    const clickedLetter = letters[Array.from(buttons).indexOf(btn)];
+    const feedback  = document.getElementById('fb_' + questionId);
+    if (answeredQuestions.has(questionId)) return;
+    buttons.forEach(b => b.disabled = true);
+    if (clickedLetter === correctLetter) {
+      answeredQuestions.add(questionId);
+      btn.classList.add('correct');
+      feedback.className = 'feedback correct-fb show';
+      feedback.innerHTML = '✅ Correto! Muito bem!';
+      updateScore(10);
+      saveProgress(questionId, { type:'quiz', correct:true, correctKey:correctLetter, chosenKey:clickedLetter });
+      for (const [g, ids] of Object.entries(quizGroups)) { if (ids.includes(questionId)) { groupCorrect[g]++; break; } }
+      checkGroupComplete(questionId);
+    } else {
+      feedback.className = 'feedback wrong-fb show';
+      feedback.innerHTML = `❌ Ops! Essa não era a certa. Tente de novo! <a href="aulas-modulo5.html" style="color:#721c24;font-weight:800;text-decoration:underline;">📚 Estudar: IA</a>`;
+      setTimeout(() => {
+        buttons.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
+        feedback.classList.remove('show');
+      }, 1800);
+    }
+  }
+
+  function checkTF(btn, questionId, correctAnswer) {
+    const container    = document.getElementById(questionId);
+    const tfBtns       = container.querySelectorAll('.tf-btn');
+    const feedback     = document.getElementById('fb_' + questionId);
+    const isVerdadeiro = btn.classList.contains('verdadeiro');
+    if (answeredQuestions.has(questionId)) return;
+    tfBtns.forEach(b => b.disabled = true);
+    if (isVerdadeiro === correctAnswer) {
+      answeredQuestions.add(questionId);
+      btn.classList.add('correct');
+      feedback.className = 'feedback correct-fb show';
+      feedback.innerHTML = '✅ Correto! Você acertou!';
+      updateScore(8);
+      saveProgress(questionId, { type:'tf', correct:true, correctKey:correctAnswer, chosenKey:isVerdadeiro });
+      for (const [g, ids] of Object.entries(quizGroups)) { if (ids.includes(questionId)) { groupCorrect[g]++; break; } }
+      checkGroupComplete(questionId);
+    } else {
+      feedback.className = 'feedback wrong-fb show';
+      feedback.innerHTML = `❌ Ops! Essa não era a certa. Tente de novo! <a href="aulas-modulo5.html" style="color:#721c24;font-weight:800;text-decoration:underline;">📚 Estudar: IA</a>`;
+      setTimeout(() => {
+        tfBtns.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
+        feedback.classList.remove('show');
+      }, 1800);
+    }
+  }
+
+  let selectedLeft = null;
+  function selectMatch(item) {
+    const side = item.dataset.match;
+    if (item.classList.contains('matched-correct')) return;
+    if (side === 'left') {
+      document.querySelectorAll('[data-match="left"].selected').forEach(el => el.classList.remove('selected'));
+      item.classList.add('selected');
+      selectedLeft = item;
+    } else if (side === 'right' && selectedLeft) {
+      if (selectedLeft.dataset.id === item.dataset.id) {
+        selectedLeft.classList.remove('selected');
+        selectedLeft.classList.add('matched-correct');
+        item.classList.add('matched-correct');
+        selectedLeft.style.pointerEvents = 'none';
+        item.style.pointerEvents = 'none';
+        updateScore(5);
+        const container = item.closest('.match-container');
+        const total   = container.querySelectorAll('[data-match="left"]').length;
+        const matched = container.querySelectorAll('.matched-correct').length / 2;
+        if (matched === total) {
+          const resultEl = container.nextElementSibling;
+          if (resultEl) {
+            resultEl.innerHTML = '🏆 Parabéns! Você ligou tudo corretamente!';
+            resultEl.style.color = '#28a745';
+            setTimeout(() => awardMedal('match_5'), 400);
+          }
+        }
+      } else {
+        selectedLeft.classList.add('matched-wrong');
+        item.classList.add('matched-wrong');
+        setTimeout(() => {
+          selectedLeft.classList.remove('matched-wrong', 'selected');
+          item.classList.remove('matched-wrong');
+        }, 500);
+      }
+      selectedLeft = null;
+    }
+  }
+
+  function toggleNav() {
+    document.querySelector('.hamburger').classList.toggle('open');
+    document.querySelector('.nav-links').classList.toggle('open');
+  }
+</script>
+</body>
+</html>

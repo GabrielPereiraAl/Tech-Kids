@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aulas — Módulo 2: Teclado e Mouse - TechKids</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amarelo: #FFD93D;
+    --laranja: #FF6B35;
+    --verde: #06D6A0;
+    --azul: #118AB2;
+    --roxo: #845EC2;
+    --rosa: #FF6B9D;
+    --fundo: #FFF9F0;
+    --escuro: #1A1A2E;
+    --card-shadow: 0 6px 0 rgba(0,0,0,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--fundo); color: var(--escuro); }
+
+  nav {
+    background: var(--escuro); padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 0 var(--amarelo);
+  }
+  .logo { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; color: var(--amarelo); text-decoration: none; }
+  .logo span { color: var(--verde); }
+  .nav-links { display: flex; gap: 0.5rem; }
+  .nav-links a { color: white; text-decoration: none; font-weight: 700; padding: 0.4rem 1rem; border-radius: 20px; transition: all 0.2s; font-size: 0.95rem; }
+  .nav-links a:hover { background: var(--amarelo); color: var(--escuro); }
+  .nav-links a.active { background: var(--laranja); color: white; }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--azul), var(--roxo));
+    color: white; text-align: center; padding: 3rem 2rem;
+  }
+  .page-header h1 { font-family: 'Baloo 2', cursive; font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .page-header p { font-size: 1.1rem; opacity: 0.9; }
+
+  /* MODULE TABS */
+  .module-tabs {
+    display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+    padding: 2rem 1rem 0; max-width: 900px; margin: 0 auto;
+  }
+  .tab-btn {
+    padding: 0.7rem 1.5rem; border-radius: 40px;
+    font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; border: 3px solid var(--escuro);
+    background: white; color: var(--escuro);
+    transition: all 0.2s; box-shadow: 0 4px 0 rgba(0,0,0,0.12);
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .tab-btn:hover, .tab-btn:active { transform: translateY(-3px); }
+  .tab-btn.active { background: var(--escuro); color: var(--amarelo); }
+
+  /* LESSON CONTENT */
+  .lesson-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+
+  .module-panel { display: none; }
+  .module-panel.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  .module-intro {
+    background: white; border-radius: 20px; padding: 2rem;
+    border: 3px solid var(--escuro); box-shadow: var(--card-shadow);
+    margin-bottom: 2rem; display: flex; gap: 1.5rem; align-items: center;
+    flex-wrap: wrap;
+  }
+  .module-intro-icon { font-size: 4rem; flex-shrink: 0; }
+  .module-intro h2 { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.4rem; }
+  .module-intro p { color: #555; line-height: 1.6; font-size: 1rem; }
+
+  .lessons-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .lesson-item {
+    background: white; border-radius: 16px; border: 2px solid #e0e0e0;
+    overflow: hidden; transition: all 0.2s;
+  }
+  .lesson-item:hover, .lesson-item:active { border-color: var(--azul); box-shadow: 0 4px 12px rgba(17,138,178,0.15); }
+
+  .lesson-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.2rem 1.5rem; cursor: pointer; user-select: none;
+  }
+  .lesson-num {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--escuro); color: var(--amarelo);
+    font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .lesson-info { flex: 1; }
+  .lesson-info h4 { font-weight: 800; font-size: 1rem; margin-bottom: 0.2rem; }
+  .lesson-info span { font-size: 0.85rem; color: #888; }
+  .lesson-arrow { font-size: 1.2rem; transition: transform 0.3s; }
+  .lesson-item.open .lesson-arrow { transform: rotate(90deg); }
+
+  .lesson-body {
+    display: none; padding: 0 1.5rem 1.5rem; border-top: 2px dashed #eee;
+    margin-top: 0; padding-top: 1.2rem;
+  }
+  .lesson-item.open .lesson-body { display: block; animation: fadeIn 0.3s ease; }
+
+  .content-block { margin-bottom: 1.5rem; }
+  .content-block h5 {
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem;
+  }
+  .content-block p { color: #444; line-height: 1.7; font-size: 0.95rem; margin-bottom: 0.8rem; }
+
+  .parts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 0.8rem; margin: 1rem 0; }
+  .part-card {
+    background: var(--fundo); border-radius: 12px; padding: 1rem;
+    text-align: center; border: 2px solid #e0e0e0; transition: all 0.2s;
+  }
+  .part-card:hover, .part-card:active { border-color: var(--azul); transform: translateY(-3px); }
+  .part-card .part-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+  .part-card h6 { font-weight: 800; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .part-card p { font-size: 0.78rem; color: #666; }
+
+  .tip-box {
+    background: linear-gradient(135deg, #FFF3CD, #FFEAA7);
+    border: 2px solid var(--amarelo); border-radius: 12px;
+    padding: 1rem 1.2rem; display: flex; gap: 0.8rem; align-items: flex-start;
+  }
+  .tip-box .tip-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .tip-box p { font-size: 0.9rem; color: #5a4000; line-height: 1.6; }
+
+  .fun-fact {
+    background: linear-gradient(135deg, #E8F5FF, #D1ECFF);
+    border: 2px solid var(--azul); border-radius: 12px;
+    padding: 1rem 1.2rem; display: flex; gap: 0.8rem; align-items: flex-start;
+    margin: 1rem 0;
+  }
+  .fun-fact p { font-size: 0.9rem; color: #0a4d6e; line-height: 1.6; }
+
+  .quiz-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--verde); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.5rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #04a07a; transition: all 0.2s;
+    text-decoration: none; margin-top: 1rem;
+  }
+  .quiz-btn:hover, .quiz-btn:active { transform: translateY(-2px); box-shadow: 0 6px 0 #04a07a; }
+
+  .keyboard-map {
+    background: var(--escuro); border-radius: 12px; padding: 1.5rem;
+    margin: 1rem 0; text-align: center;
+  }
+  .key-row { display: flex; gap: 4px; justify-content: center; margin-bottom: 4px; flex-wrap: wrap; }
+  .key {
+    background: #2d2d4e; color: #eee; border: 1px solid #555;
+    border-radius: 4px; padding: 6px 10px; font-family: monospace;
+    font-size: 0.75rem; min-width: 32px; text-align: center;
+    box-shadow: 0 2px 0 #111; transition: all 0.1s; cursor: default;
+  }
+  .key:hover, .key:active { background: var(--amarelo); color: var(--escuro); transform: translateY(-1px); }
+  .key.wide { min-width: 60px; }
+  .key.wider { min-width: 80px; }
+  .key.special { background: #3a3a6e; color: var(--verde); }
+
+  footer {
+    background: var(--escuro); color: rgba(255,255,255,0.7);
+    text-align: center; padding: 2rem; font-size: 0.9rem; margin-top: 3rem;
+  }
+  footer strong { color: var(--amarelo); }
+
+
+  /* === HAMBURGER MENU === */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 0.5rem;
+  }
+  .hamburger span {
+    display: block; width: 26px; height: 3px;
+    background: white; border-radius: 3px; transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  @media (max-width: 600px) {
+    .hamburger { display: flex; }
+    .nav-links {
+      display: none; position: absolute; top: 70px; left: 0; right: 0;
+      background: var(--escuro); flex-direction: column; align-items: stretch;
+      padding: 0.8rem; gap: 0.3rem;
+      border-top: 3px solid var(--amarelo); box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 99;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: block; padding: 0.8rem 1rem; border-radius: 12px; font-size: 1rem; }
+    .module-intro { flex-direction: column; text-align: center; }
+    .parts-grid { grid-template-columns: repeat(2, 1fr); }
+    .keyboard-map { overflow-x: auto; padding: 1rem 0.5rem; }
+    .key { min-width: 24px; padding: 5px 6px; font-size: 0.65rem; }
+    .key.wide { min-width: 40px; }
+    .key.wider { min-width: 52px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">🖥️ Tech<span>Kids</span></a>
+  <button class="hamburger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-links">
+    <a href="index.html">🏠 Início</a>
+    <a href="aulas.html">📚 Aulas</a>
+    <a href="atividades.html">🎮 Atividades</a>
+    <a href="glossario.html">📖 Glossário</a>
+    <a href="conquistas.html">🏆 Conquistas</a>
+    <a href="sobre.html">ℹ️ Sobre</a>
+  </div>
+</nav>
+
+<div class="page-header" style="background:linear-gradient(135deg, var(--verde), var(--azul));">
+  <h1>⌨️ Módulo 2 — Teclado e Mouse</h1>
+  <p>Leia com atenção e depois faça as atividades!</p>
+</div>
+
+<div class="lesson-container">
+<div class="module-panel active" id="m2">
+    <div class="module-intro">
+      <div class="module-intro-icon">⌨️</div>
+      <div>
+        <h2>Módulo 2 — Teclado e Mouse</h2>
+        <p>Agora que você já conhece o computador, é hora de aprender a usá-lo! O teclado e o mouse são suas ferramentas principais. Vamos dominar os dois!</p>
+      </div>
+    </div>
+    <div class="lessons-list">
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">1</div>
+          <div class="lesson-info">
+            <h4>Conhecendo o teclado</h4>
+            <span>⏱️ 8 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>⌨️ As partes do teclado</h5>
+            <p>O teclado tem muitas teclas! Mas não se assuste — vamos conhecer as mais importantes:</p>
+            <div class="keyboard-map" onclick="event.stopPropagation()">
+              <div class="key-row">
+                <div class="key special wider">Esc</div>
+                <div class="key special">F1</div><div class="key special">F2</div><div class="key special">F3</div><div class="key special">F4</div>
+                <div class="key special">F5</div><div class="key special">F6</div>
+              </div>
+              <div class="key-row">
+                <div class="key">1</div><div class="key">2</div><div class="key">3</div><div class="key">4</div>
+                <div class="key">5</div><div class="key">6</div><div class="key">7</div><div class="key">8</div>
+                <div class="key">9</div><div class="key">0</div><div class="key special wide">←(Del)</div>
+              </div>
+              <div class="key-row">
+                <div class="key">Q</div><div class="key">W</div><div class="key">E</div><div class="key">R</div>
+                <div class="key">T</div><div class="key">Y</div><div class="key">U</div><div class="key">I</div>
+                <div class="key">O</div><div class="key">P</div>
+              </div>
+              <div class="key-row">
+                <div class="key special">Caps</div>
+                <div class="key">A</div><div class="key">S</div><div class="key">D</div><div class="key">F</div>
+                <div class="key">G</div><div class="key">H</div><div class="key">J</div><div class="key">K</div>
+                <div class="key">L</div><div class="key special wide">Enter</div>
+              </div>
+              <div class="key-row">
+                <div class="key">Z</div><div class="key">X</div><div class="key">C</div><div class="key">V</div>
+                <div class="key">B</div><div class="key">N</div><div class="key">M</div>
+              </div>
+              <div class="key-row">
+                <div class="key special">Ctrl</div>
+                <div class="key" style="min-width:120px">Espaço</div>
+                <div class="key special">Alt</div>
+                <div class="key special">⇧ Shift</div>
+              </div>
+            </div>
+            <p style="color:#888;font-size:0.8rem;text-align:center;margin-top:0.5rem">💡 No computador: passe o mouse sobre as teclas! No celular/tablet: toque nelas!</p>
+          </div>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <p>Errou alguma coisa? Não se preocupe! Use <strong>Ctrl + Z</strong> para desfazer o último erro. É o "botão mágico" de voltar atrás — você pode usar várias vezes seguidas!</p>
+          </div>
+          <a href="atividades-modulo2.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">2</div>
+          <div class="lesson-info">
+            <h4>Teclas especiais importantes</h4>
+            <span>⏱️ 6 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>⭐ Teclas que você vai usar muito!</h5>
+            <div class="parts-grid">
+              <div class="part-card">
+                <span class="part-icon">⬛</span>
+                <h6>Espaço</h6>
+                <p>Deixa um espaço entre as palavras</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">↵</span>
+                <h6>Enter</h6>
+                <p>Confirma algo ou pula uma linha</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">⌫</span>
+                <h6>Backspace</h6>
+                <p>Apaga a letra antes do cursor</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">⇧</span>
+                <h6>Shift</h6>
+                <p>Faz letras maiúsculas e símbolos</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🔒</span>
+                <h6>Caps Lock</h6>
+                <p>Trava as letras em MAIÚSCULAS</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">⎋</span>
+                <h6>Esc</h6>
+                <p>Cancela ou fecha o que está aberto</p>
+              </div>
+            </div>
+          </div>
+          <a href="atividades-modulo2.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">3</div>
+          <div class="lesson-info">
+            <h4>Usando o mouse</h4>
+            <span>⏱️ 6 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>🖱️ Ações do mouse</h5>
+            <div class="parts-grid">
+              <div class="part-card">
+                <span class="part-icon">👆</span>
+                <h6>Clicar</h6>
+                <p>Pressionar e soltar o botão esquerdo</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">👆👆</span>
+                <h6>Duplo Clique</h6>
+                <p>Clicar duas vezes rápido para abrir</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🤚</span>
+                <h6>Arrastar</h6>
+                <p>Segurar e mover para outro lugar</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">📜</span>
+                <h6>Rolar</h6>
+                <p>Girar o botão do meio para subir/descer</p>
+              </div>
+            </div>
+          </div>
+          <div class="fun-fact">
+            <span>🖱️</span>
+            <p><strong>Dica importante!</strong> Clicar com o botão <strong>direito</strong> do mouse abre um menu secreto com várias opções úteis — como copiar, colar, renomear arquivos e muito mais. Quando tiver acesso a um computador, peça a um adulto para te mostrar como funciona!</p>
+          </div>
+          <a href="atividades-modulo2.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">4</div>
+          <div class="lesson-info">
+            <h4>Atalhos de teclado</h4>
+            <span>⏱️ 7 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>⚡ Atalhos mágicos!</h5>
+            <p>Atalhos de teclado são combinações de teclas que fazem coisas rápido! É como ter superpoderes!</p>
+            <div class="parts-grid">
+              <div class="part-card">
+                <span class="part-icon">📋</span>
+                <h6>Ctrl + C</h6>
+                <p>Copiar texto selecionado</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">📌</span>
+                <h6>Ctrl + V</h6>
+                <p>Colar o que foi copiado</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">✂️</span>
+                <h6>Ctrl + X</h6>
+                <p>Recortar texto selecionado</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">↩️</span>
+                <h6>Ctrl + Z</h6>
+                <p>Desfazer o último erro!</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">💾</span>
+                <h6>Ctrl + S</h6>
+                <p>Salvar o arquivo</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🔍</span>
+                <h6>Ctrl + A</h6>
+                <p>Selecionar tudo</p>
+              </div>
+            </div>
+          </div>
+          <a href="atividades-modulo2.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">5</div>
+          <div class="lesson-info">
+            <h4>Postura correta ao usar o computador</h4>
+            <span>⏱️ 4 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>🪑 Usando o dispositivo do jeito certo!</h5>
+            <p>Usar qualquer tela por muito tempo com a postura errada pode cansar o corpo. Veja as dicas para cada dispositivo:</p>
+            <div class="tip-box" style="margin-bottom:1rem;">
+              <span class="tip-icon">🖥️</span>
+              <p><strong>No computador:</strong> Sente-se com as costas retas na cadeira, tela na altura dos olhos a uns 50cm de distância e pés apoiados no chão.</p>
+            </div>
+            <div class="tip-box" style="margin-bottom:1rem;background:linear-gradient(135deg,#EEF5FF,#DCE9FF);border-color:var(--azul);">
+              <span class="tip-icon">📱</span>
+              <p><strong>No celular ou tablet:</strong> Segure o aparelho na frente do rosto (não abaixe muito a cabeça!), apoie os cotovelos e evite deitar usando a tela.</p>
+            </div>
+            <div class="parts-grid">
+              <div class="part-card">
+                <span class="part-icon">👁️</span>
+                <h6>Olhos</h6>
+                <p>Tela na altura dos olhos, pelo menos 30cm de distância</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🧍</span>
+                <h6>Postura</h6>
+                <p>Costas retas, não curvadas para frente</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">💡</span>
+                <h6>Luz</h6>
+                <p>Use em ambiente bem iluminado</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">⏰</span>
+                <h6>Pausas</h6>
+                <p>Descanse os olhos a cada 20 minutos</p>
+              </div>
+            </div>
+          </div>
+          <a href="atividades-modulo2.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:2rem 0;"><a href="aulas-modulo1.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:white;color:var(--escuro);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.12);">← Módulo anterior</a><a href="aulas.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--escuro);color:var(--amarelo);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.2);">📚 Todas as Aulas</a><a href="aulas-modulo3.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--verde);color:white;border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 #04a07a;">Próximo Módulo →</a></div>
+</div>
+
+<footer>
+  <p>🖥️ <strong>TechKids</strong> • 2025</p>
+</footer>
+
+<script>
+  function showModule(id) {
+    document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    window.location.hash = id;
+  }
+  function toggleLesson(el) {
+    el.classList.toggle('open');
+  }
+  // Handle URL hash
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    const btns = document.querySelectorAll('.tab-btn');
+    if (hash === 'modulo1' || hash === 'm1') {
+      btns[0].click();
+    } else if (hash === 'modulo2' || hash === 'm2') {
+      btns[1].classList.add('active'); btns[0].classList.remove('active');
+      document.getElementById('m1').classList.remove('active');
+      document.getElementById('m2').classList.add('active');
+    } else if (hash === 'modulo3' || hash === 'm3') {
+      btns[2].classList.add('active'); btns[0].classList.remove('active');
+      document.getElementById('m1').classList.remove('active');
+      document.getElementById('m3').classList.add('active');
+    } else if (hash === 'modulo4' || hash === 'm4') {
+      btns[3].classList.add('active'); btns[0].classList.remove('active');
+      document.getElementById('m1').classList.remove('active');
+      document.getElementById('m4').classList.add('active');
+    }
+  }
+</script>
+</body>
+</html>

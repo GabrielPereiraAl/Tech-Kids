@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atividades — Módulo 4: Criando com PC - TechKids</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amarelo: #FFD93D;
+    --laranja: #FF6B35;
+    --verde: #06D6A0;
+    --azul: #118AB2;
+    --roxo: #845EC2;
+    --rosa: #FF6B9D;
+    --fundo: #FFF9F0;
+    --escuro: #1A1A2E;
+    --card-shadow: 0 6px 0 rgba(0,0,0,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--fundo); color: var(--escuro); }
+
+  nav {
+    background: var(--escuro); padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 0 var(--amarelo);
+  }
+  .logo { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; color: var(--amarelo); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; }
+  .logo span { color: var(--verde); }
+  .nav-links { display: flex; gap: 0.5rem; }
+  .nav-links a { color: white; text-decoration: none; font-weight: 700; padding: 0.4rem 1rem; border-radius: 20px; transition: all 0.2s; font-size: 0.95rem; }
+  .nav-links a:hover { background: var(--amarelo); color: var(--escuro); }
+  .nav-links a.active { background: var(--laranja); color: white; }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--laranja), var(--rosa));
+    color: white; text-align: center; padding: 3rem 2rem;
+  }
+  .page-header h1 { font-family: 'Baloo 2', cursive; font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .page-header p { font-size: 1.1rem; opacity: 0.9; }
+
+  /* SCORE BOARD */
+  .scoreboard {
+    background: var(--escuro); color: white;
+    display: flex; justify-content: center; gap: 3rem; padding: 1rem 2rem;
+    flex-wrap: wrap;
+  }
+  .score-item { text-align: center; }
+  .score-num { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 800; color: var(--amarelo); line-height: 1; }
+  .score-label { font-size: 0.8rem; opacity: 0.7; }
+
+  /* MODULE TABS */
+  .module-tabs {
+    display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+    padding: 2rem 1rem 0; max-width: 900px; margin: 0 auto;
+  }
+  .tab-btn {
+    padding: 0.7rem 1.5rem; border-radius: 40px;
+    font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; border: 3px solid var(--escuro);
+    background: white; color: var(--escuro);
+    transition: all 0.2s; box-shadow: 0 4px 0 rgba(0,0,0,0.12);
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .tab-btn:hover, .tab-btn:active { transform: translateY(-3px); }
+  .tab-btn.active { background: var(--escuro); color: var(--amarelo); }
+
+  .activities-container { max-width: 860px; margin: 0 auto; padding: 2rem; }
+
+  .module-panel { display: none; }
+  .module-panel.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* MODULE HEADER */
+  .module-header {
+    background: white; border-radius: 20px; padding: 1.5rem 2rem;
+    border: 3px solid var(--escuro); box-shadow: var(--card-shadow);
+    margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .module-header-icon { font-size: 3rem; }
+  .module-header h2 { font-family: 'Baloo 2', cursive; font-size: 1.6rem; font-weight: 800; }
+  .module-header p { color: #666; font-size: 0.95rem; }
+
+  /* ACTIVITY CARD */
+  .activity-card {
+    background: white; border-radius: 20px; padding: 2rem;
+    border: 3px solid var(--escuro); box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+  }
+  .activity-title {
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800;
+    margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .activity-subtitle { color: #888; font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+  /* QUIZ */
+  .quiz-question {
+    background: var(--fundo); border-radius: 14px; padding: 1.2rem;
+    margin-bottom: 1.2rem; border: 2px solid #e8e8e8;
+  }
+  .quiz-question p { font-weight: 700; font-size: 1rem; margin-bottom: 1rem; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option-btn {
+    background: white; border: 2px solid #ddd; border-radius: 10px;
+    padding: 0.7rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; text-align: left;
+    transition: all 0.2s; display: flex; align-items: center; gap: 0.6rem;
+  }
+  .option-btn:hover:not(:disabled), .option-btn:active:not(:disabled) { border-color: var(--azul); background: #f0f8ff; transform: translateX(4px); }
+  .option-btn.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+  .option-btn.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+  .option-btn:disabled { cursor: not-allowed; }
+  .option-letter {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--escuro); color: var(--amarelo);
+    font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .feedback {
+    display: none; margin-top: 0.8rem; padding: 0.8rem 1rem;
+    border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+    animation: fadeIn 0.3s ease;
+  }
+  .feedback.show { display: flex; align-items: center; gap: 0.5rem; }
+  .feedback.correct-fb { background: #d4edda; color: #155724; border: 2px solid #28a745; }
+  .feedback.wrong-fb { background: #f8d7da; color: #721c24; border: 2px solid #dc3545; }
+
+  /* TRUE/FALSE */
+  .tf-options { display: flex; gap: 1rem; }
+  .tf-btn {
+    flex: 1; padding: 0.8rem; border-radius: 12px; font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem; font-weight: 700; cursor: pointer; border: 3px solid var(--escuro);
+    transition: all 0.2s; background: white;
+  }
+  .tf-btn:hover:not(:disabled), .tf-btn:active:not(:disabled) { transform: translateY(-3px); }
+  .tf-btn.verdadeiro { background: #E8FFF5; }
+  .tf-btn.falso { background: #FFF0F0; }
+  .tf-btn.correct { background: #28a745; color: white; border-color: #1e7e34; }
+  .tf-btn.wrong { background: #dc3545; color: white; border-color: #c82333; }
+  .tf-btn:disabled { cursor: not-allowed; }
+
+  /* MATCHING */
+  .match-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .match-col h6 { font-weight: 800; margin-bottom: 0.8rem; font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+  .match-item {
+    background: var(--fundo); border: 2px solid #ddd; border-radius: 10px;
+    padding: 0.7rem 1rem; margin-bottom: 0.6rem; cursor: pointer;
+    font-weight: 600; font-size: 0.9rem; transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .match-item:hover, .match-item:active { border-color: var(--azul); }
+  .match-item.selected { border-color: var(--azul); background: #E8F5FF; }
+  .match-item.matched-correct { border-color: #28a745; background: #d4edda; color: #155724; }
+  .match-item.matched-wrong { border-color: #dc3545; background: #f8d7da; color: #721c24; animation: shake 0.4s ease; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  /* FILL IN THE BLANK */
+  .fill-blank {
+    background: var(--fundo); border-radius: 14px; padding: 1.2rem;
+    margin-bottom: 1.2rem; border: 2px solid #e8e8e8;
+  }
+  .fill-blank p { font-weight: 700; font-size: 1rem; margin-bottom: 1rem; line-height: 1.8; }
+  .blank-input {
+    border: 2px solid var(--azul); border-radius: 8px; padding: 0.3rem 0.7rem;
+    font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700;
+    width: 130px; text-align: center; outline: none; background: white;
+  }
+  .blank-input.correct { border-color: #28a745; background: #d4edda; }
+  .blank-input.wrong { border-color: #dc3545; background: #f8d7da; }
+  .check-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--azul); color: white; border: none; border-radius: 20px;
+    padding: 0.5rem 1.2rem; font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 3px 0 #0c6a8a; transition: all 0.2s; margin-top: 0.8rem;
+  }
+  .check-btn:hover, .check-btn:active { transform: translateY(-2px); box-shadow: 0 5px 0 #0c6a8a; }
+
+  /* SUBMIT / RESULT */
+  .activity-submit {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .result-badge {
+    display: none; padding: 0.7rem 1.5rem; border-radius: 30px;
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+    animation: bounceIn 0.4s ease;
+  }
+  @keyframes bounceIn { 0%{transform:scale(0)} 70%{transform:scale(1.1)} 100%{transform:scale(1)} }
+  .result-badge.show { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .result-badge.gold { background: var(--amarelo); color: var(--escuro); border: 3px solid var(--escuro); }
+  .result-badge.silver { background: #e8e8e8; color: var(--escuro); border: 3px solid #aaa; }
+  .result-badge.bronze { background: #f4a460; color: white; border: 3px solid #cd853f; }
+  .btn-next {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--verde); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.5rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #04a07a; transition: all 0.2s; text-decoration: none;
+  }
+  .btn-next:hover, .btn-next:active { transform: translateY(-2px); box-shadow: 0 6px 0 #04a07a; }
+  .btn-retry {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--laranja); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.5rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #c44a1a; transition: all 0.2s;
+  }
+  .btn-retry:hover, .btn-retry:active { transform: translateY(-2px); }
+
+  /* WORD SEARCH */
+  .word-search-wrap { overflow-x: auto; }
+  .word-grid {
+    display: inline-grid; grid-template-columns: repeat(10, 38px);
+    gap: 2px; margin: 1rem auto; background: var(--escuro);
+    border-radius: 10px; padding: 8px; user-select: none;
+  }
+  .wg-cell {
+    width: 38px; height: 38px; background: #2d2d4e; color: #eee;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 1rem;
+    border-radius: 4px; cursor: pointer; transition: all 0.1s; text-transform: uppercase;
+  }
+  .wg-cell:hover, .wg-cell:active, .wg-cell:active { background: var(--azul); }
+  .wg-cell.selecting { background: var(--amarelo); color: var(--escuro); }
+  .wg-cell.found { background: var(--verde); color: white; }
+  .word-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .word-tag {
+    padding: 0.3rem 0.9rem; border-radius: 20px; font-weight: 800; font-size: 0.85rem;
+    border: 2px solid var(--escuro); background: white;
+  }
+  .word-tag.found-word { background: var(--verde); color: white; border-color: var(--verde); text-decoration: line-through; }
+
+  footer {
+    background: var(--escuro); color: rgba(255,255,255,0.7);
+    text-align: center; padding: 2rem; font-size: 0.9rem; margin-top: 3rem;
+  }
+  footer strong { color: var(--amarelo); }
+
+  /* MEDAL MODAL */
+  .medal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .medal-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+  .medal-modal {
+    background: white; border-radius: 28px; padding: 3rem 2.5rem;
+    border: 4px solid var(--escuro); box-shadow: 0 12px 0 rgba(0,0,0,0.2);
+    text-align: center; max-width: 400px; width: 90%;
+    animation: bounceIn 0.5s ease;
+  }
+  @keyframes bounceIn { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+  .medal-emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: spin 0.6s ease; }
+  @keyframes spin { from{transform:rotate(-20deg) scale(0.5)} to{transform:rotate(0deg) scale(1)} }
+  .medal-modal h2 { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--escuro); }
+  .medal-modal p { color: #555; font-size: 1rem; line-height: 1.5; margin-bottom: 1.5rem; }
+  .medal-name-badge {
+    display: inline-block; background: var(--amarelo); color: var(--escuro);
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+    padding: 0.4rem 1.4rem; border-radius: 30px; border: 3px solid var(--escuro);
+    margin-bottom: 1.5rem;
+  }
+  .modal-btns { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+  .btn-modal-close {
+    background: var(--verde); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.8rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #04a07a; transition: all 0.2s;
+  }
+  .btn-modal-close:hover, .btn-modal-close:active { transform: translateY(-2px); }
+  .btn-modal-conquistas {
+    background: var(--roxo); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.8rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #5e3d9e; transition: all 0.2s; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .btn-modal-conquistas:hover { transform: translateY(-2px); }
+
+
+  /* === HAMBURGER MENU === */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 0.5rem;
+  }
+  .hamburger span {
+    display: block; width: 26px; height: 3px;
+    background: white; border-radius: 3px; transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  @media (max-width: 600px) {
+    .hamburger { display: flex; }
+    .nav-links {
+      display: none; position: absolute; top: 70px; left: 0; right: 0;
+      background: var(--escuro); flex-direction: column; align-items: stretch;
+      padding: 0.8rem; gap: 0.3rem;
+      border-top: 3px solid var(--amarelo); box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 99;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: block; padding: 0.8rem 1rem; border-radius: 12px; font-size: 1rem; }
+    .match-container { grid-template-columns: 1fr; }
+    .tf-options { flex-direction: column; }
+    .word-grid { grid-template-columns: repeat(10, clamp(26px, 8vw, 32px)); }
+    .wg-cell { width: clamp(26px, 8vw, 32px); height: clamp(26px, 8vw, 32px); font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">🖥️ Tech<span>Kids</span></a>
+  <button class="hamburger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-links">
+    <a href="index.html">🏠 Início</a>
+    <a href="aulas.html">📚 Aulas</a>
+    <a href="atividades.html">🎮 Atividades</a>
+    <a href="glossario.html">📖 Glossário</a>
+    <a href="conquistas.html">🏆 Conquistas</a>
+    <a href="sobre.html">ℹ️ Sobre</a>
+  </div>
+</nav>
+
+<div class="page-header" style="background:linear-gradient(135deg, var(--roxo), var(--rosa));">
+  <h1>🎨 Módulo 4 — Criando com PC</h1>
+  <p>Teste seus conhecimentos e ganhe medalhas!</p>
+</div>
+
+<div class="scoreboard">
+  <div class="score-item">
+    <div class="score-num" id="total-score">0</div>
+    <div class="score-label">Pontos</div>
+  </div>
+  <div class="score-item">
+    <div class="score-num" id="correct-count">0</div>
+    <div class="score-label">Acertos</div>
+  </div>
+  <div class="score-item">
+    <div class="score-num" id="medal-count">0</div>
+    <div class="score-label">Medalhas</div>
+  </div>
+</div>
+
+<div class="activities-container">
+<div class="module-header">
+      <div class="module-header-icon">🎨</div>
+      <div>
+        <h2>Módulo 4 — Criando com o PC</h2>
+        <p>Prove que você sabe usar os programas do computador!</p>
+      </div>
+    </div>
+
+    <!-- Atividade 4.1 - Quiz -->
+    <div class="activity-card">
+      <div class="activity-title">🎯 Quiz — Criando com o PC</div>
+      <div class="activity-subtitle">Múltipla escolha • 5 questões • 10 pontos cada</div>
+
+      <div class="quiz-question" id="q4_1">
+        <p>1. Qual programa usamos para ESCREVER textos e histórias?</p>
+        <div class="options">
+          <button class="option-btn" onclick="checkQuiz(this,'q4_1','B')"><span class="option-letter">A</span> Paint</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_1','B')"><span class="option-letter">B</span> Word (ou Writer)</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_1','B')"><span class="option-letter">C</span> Excel</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_1','B')"><span class="option-letter">D</span> Chrome</button>
+        </div>
+        <div class="feedback" id="fb_q4_1"></div>
+      </div>
+
+      <div class="quiz-question" id="q4_2">
+        <p>2. Para criar DESENHOS e pinturas no computador, qual programa usamos?</p>
+        <div class="options">
+          <button class="option-btn" onclick="checkQuiz(this,'q4_2','A')"><span class="option-letter">A</span> Paint</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_2','A')"><span class="option-letter">B</span> PowerPoint</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_2','A')"><span class="option-letter">C</span> Excel</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_2','A')"><span class="option-letter">D</span> Word</button>
+        </div>
+        <div class="feedback" id="fb_q4_2"></div>
+      </div>
+
+      <div class="quiz-question" id="q4_3">
+        <p>3. No Word, qual atalho deixa o texto em NEGRITO?</p>
+        <div class="options">
+          <button class="option-btn" onclick="checkQuiz(this,'q4_3','D')"><span class="option-letter">A</span> Ctrl + I</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_3','D')"><span class="option-letter">B</span> Ctrl + U</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_3','D')"><span class="option-letter">C</span> Ctrl + N</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_3','D')"><span class="option-letter">D</span> Ctrl + B</button>
+        </div>
+        <div class="feedback" id="fb_q4_3"></div>
+      </div>
+
+      <div class="quiz-question" id="q4_4">
+        <p>4. O que é uma PASTA no computador?</p>
+        <div class="options">
+          <button class="option-btn" onclick="checkQuiz(this,'q4_4','C')"><span class="option-letter">A</span> Um tipo de vírus</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_4','C')"><span class="option-letter">B</span> Um programa para fazer cálculos</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_4','C')"><span class="option-letter">C</span> Um lugar para organizar e guardar arquivos</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_4','C')"><span class="option-letter">D</span> A tela inicial do Windows</button>
+        </div>
+        <div class="feedback" id="fb_q4_4"></div>
+      </div>
+
+      <div class="quiz-question" id="q4_5">
+        <p>5. Qual programa usamos para criar APRESENTAÇÕES com slides?</p>
+        <div class="options">
+          <button class="option-btn" onclick="checkQuiz(this,'q4_5','B')"><span class="option-letter">A</span> Word</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_5','B')"><span class="option-letter">B</span> PowerPoint (ou Google Slides)</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_5','B')"><span class="option-letter">C</span> Paint</button>
+          <button class="option-btn" onclick="checkQuiz(this,'q4_5','B')"><span class="option-letter">D</span> Bloco de Notas</button>
+        </div>
+        <div class="feedback" id="fb_q4_5"></div>
+      </div>
+
+      </div>
+    </div>
+
+    <!-- Atividade 4.2 - Correspondência Programas -->
+    <div class="activity-card">
+      <div class="activity-title">🔗 Combine os Programas!</div>
+      <div class="activity-subtitle">Ligue o programa à sua função • 4 pares</div>
+      <div class="match-container">
+        <div class="match-col">
+          <h6>Programa</h6>
+          <div class="match-item" data-match="left" data-id="word" onclick="selectMatch(this)">📝 Word</div>
+          <div class="match-item" data-match="left" data-id="paint" onclick="selectMatch(this)">🎨 Paint</div>
+          <div class="match-item" data-match="left" data-id="excel" onclick="selectMatch(this)">📊 Excel</div>
+          <div class="match-item" data-match="left" data-id="ppt" onclick="selectMatch(this)">🖼️ PowerPoint</div>
+        </div>
+        <div class="match-col">
+          <h6>Função Principal</h6>
+          <div class="match-item" data-match="right" data-id="excel" onclick="selectMatch(this)">Fazer tabelas e cálculos</div>
+          <div class="match-item" data-match="right" data-id="ppt" onclick="selectMatch(this)">Criar slides e apresentações</div>
+          <div class="match-item" data-match="right" data-id="word" onclick="selectMatch(this)">Escrever textos e documentos</div>
+          <div class="match-item" data-match="right" data-id="paint" onclick="selectMatch(this)">Desenhar e colorir imagens</div>
+        </div>
+      </div>
+      <div id="match4-result" style="margin-top:1rem;font-weight:700;"></div>
+    </div>
+
+    <!-- Atividade 4.3 - Verdadeiro ou Falso -->
+    <div class="activity-card">
+      <div class="activity-title">✅ Verdadeiro ou Falso? — Criando com PC</div>
+      <div class="activity-subtitle">5 questões • 8 pontos cada</div>
+
+      <div class="quiz-question" id="tf4_1">
+        <p>1. Ctrl + S serve para salvar um arquivo?</p>
+        <div class="tf-options">
+          <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf4_1',true)">👍 Verdadeiro</button>
+          <button class="tf-btn falso" onclick="checkTF(this,'tf4_1',true)">👎 Falso</button>
+        </div>
+        <div class="feedback" id="fb_tf4_1"></div>
+      </div>
+
+      <div class="quiz-question" id="tf4_2">
+        <p>2. A Lixeira guarda os arquivos deletados antes de apagá-los de vez?</p>
+        <div class="tf-options">
+          <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf4_2',true)">👍 Verdadeiro</button>
+          <button class="tf-btn falso" onclick="checkTF(this,'tf4_2',true)">👎 Falso</button>
+        </div>
+        <div class="feedback" id="fb_tf4_2"></div>
+      </div>
+
+      <div class="quiz-question" id="tf4_3">
+        <p>3. No Paint, o "balde de tinta" serve para desenhar linhas finas?</p>
+        <div class="tf-options">
+          <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf4_3',false)">👍 Verdadeiro</button>
+          <button class="tf-btn falso" onclick="checkTF(this,'tf4_3',false)">👎 Falso</button>
+        </div>
+        <div class="feedback" id="fb_tf4_3"></div>
+      </div>
+
+      <div class="quiz-question" id="tf4_4">
+        <p>4. Uma apresentação de slides pode ter quantas páginas forem necessárias?</p>
+        <div class="tf-options">
+          <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf4_4',true)">👍 Verdadeiro</button>
+          <button class="tf-btn falso" onclick="checkTF(this,'tf4_4',true)">👎 Falso</button>
+        </div>
+        <div class="feedback" id="fb_tf4_4"></div>
+      </div>
+
+      <div class="quiz-question" id="tf4_5">
+        <p>5. Desktop é o nome dado à área de trabalho do computador?</p>
+        <div class="tf-options">
+          <button class="tf-btn verdadeiro" onclick="checkTF(this,'tf4_5',true)">👍 Verdadeiro</button>
+          <button class="tf-btn falso" onclick="checkTF(this,'tf4_5',true)">👎 Falso</button>
+        </div>
+        <div class="feedback" id="fb_tf4_5"></div>
+      </div>
+</div>
+
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:2rem 0;"><a href="atividades-modulo3.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:white;color:var(--escuro);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.12);">← Atividade anterior</a><a href="aulas-modulo4.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--azul);color:white;border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 #0c6a8a;">📚 Estudar este Módulo</a><a href="atividades.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--escuro);color:var(--amarelo);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.2);">🎮 Todas as Atividades</a><a href="atividades-modulo5.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--rosa);color:white;border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 #c43d75;">Próxima atividade →</a></div>
+
+<div class="medal-overlay" id="medalOverlay">
+  <div class="medal-modal">
+    <span class="medal-emoji" id="modalEmoji">🏅</span>
+    <h2>Medalha Conquistada!</h2>
+    <p id="modalDesc">Você completou o desafio com sucesso!</p>
+    <div class="medal-name-badge" id="modalMedalName">🏆 Medalha</div>
+    <div class="modal-btns">
+      <button class="btn-modal-close" onclick="closeMedalModal()">🎉 Continuar!</button>
+      <a href="conquistas.html" class="btn-modal-conquistas">🏆 Ver Conquistas</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>🖥️ <strong>TechKids</strong> • 2025</p>
+</footer>
+
+<script>
+  // ── Carrega progresso salvo ────────────────────────────────────────────────
+  const _saved = JSON.parse(localStorage.getItem('techkids') || '{}');
+  let totalScore   = _saved.totalScore   || 0;
+  let correctCount = _saved.correctCount || 0;
+  let medalCount   = (_saved.medals || []).length;
+  const answeredQuestions = new Set(_saved.answeredQuestions || []);
+
+  // Atualiza placar imediatamente com dados salvos
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('total-score').textContent   = totalScore;
+    document.getElementById('correct-count').textContent = correctCount;
+    document.getElementById('medal-count').textContent   = medalCount;
+
+    // Bloqueia visualmente as questões já respondidas
+    answeredQuestions.forEach(qId => restoreAnswered(qId));
+
+    // Modo revisão: se a medalha foi conquistada, revela respostas corretas
+    const _earned = new Set((_saved.medals || []).map(m => m.name));
+    Object.entries(quizGroups).forEach(([gKey, ids]) => {
+      const def = medalDefs[gKey];
+      if (def && _earned.has(def.name))
+        ids.forEach(qId => { if (!answeredQuestions.has(qId)) revealCorrectAnswer(qId, gKey); });
+    });
+    ['match_1','match_2','match_3','match_4'].forEach(key => {
+      const def = medalDefs[key];
+      if (def && _earned.has(def.name)) revealMatchPairs('match' + key.split('_')[1] + '-result');
+    });
+  });
+
+  // ── Mapa completo de medalhas ──────────────────────────────────────────────
+  // quiz_N  → acertar TODAS as questões de múltipla escolha do módulo N
+  // tf_N    → responder TODAS as questões V/F do módulo N
+  // match_N → completar o jogo de ligar do módulo N
+  const medalDefs = {
+    quiz_1:  { emoji: '🌟', name: 'Gênio do Computador',   desc: 'Você acertou todas as perguntas do Quiz do Módulo 1!' },
+    tf_1:    { emoji: '✅', name: 'Detetive do Computador', desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 1!' },
+    match_1: { emoji: '🖥️', name: 'Mestre das Peças',      desc: 'Você ligou todas as partes do computador às suas funções!' },
+    quiz_2:  { emoji: '⚡', name: 'Craque do Teclado',     desc: 'Você acertou todas as perguntas do Quiz do Módulo 2!' },
+    tf_2:    { emoji: '🎹', name: 'Dedo de Ouro',           desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 2!' },
+    match_2: { emoji: '⌨️', name: 'Rei dos Atalhos',        desc: 'Você combinou todos os atalhos de teclado às suas funções!' },
+    quiz_3:  { emoji: '🔒', name: 'Guardião da Net',        desc: 'Você acertou todas as perguntas do Quiz do Módulo 3!' },
+    tf_3:    { emoji: '🛡️', name: 'Protetor Digital',       desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 3!' },
+    match_3: { emoji: '🌐', name: 'Navegador Seguro',       desc: 'Você combinou todos os navegadores às suas descrições!' },
+    quiz_4:  { emoji: '🖌️', name: 'Artista Digital',        desc: 'Você acertou todas as perguntas do Quiz do Módulo 4!' },
+    tf_4:    { emoji: '📂', name: 'Organizador Master',     desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 4!' },
+    match_4: { emoji: '🎨', name: 'Criador Digital',        desc: 'Você ligou todos os programas às suas funções corretamente!' },
+  };
+
+  // IDs de todas as questões por grupo (quiz e tf por módulo)
+  const quizGroups = {
+    quiz_1: ['q1_1','q1_2','q1_3','q1_4','q1_5'],
+    tf_1:   ['tf1_1','tf1_2','tf1_3','tf1_4','tf1_5'],
+    quiz_2: ['q2_1','q2_2','q2_3','q2_4','q2_5'],
+    tf_2:   ['tf2_1','tf2_2','tf2_3','tf2_4','tf2_5'],
+    quiz_3: ['q3_1','q3_2','q3_3','q3_4','q3_5'],
+    tf_3:   ['tf3_1','tf3_2','tf3_3','tf3_4','tf3_5'],
+    quiz_4: ['q4_1','q4_2','q4_3','q4_4','q4_5'],
+    tf_4:   ['tf4_1','tf4_2','tf4_3','tf4_4','tf4_5'],
+  };
+
+  // Rastreia acertos por grupo
+  const groupCorrect = {};
+  Object.keys(quizGroups).forEach(g => groupCorrect[g] = 0);
+
+  // ── Utilitários ────────────────────────────────────────────────────────────
+  function updateScore(pts) {
+    totalScore += pts;
+    if (pts > 0) correctCount++;
+    document.getElementById('total-score').textContent = totalScore;
+    document.getElementById('correct-count').textContent = correctCount;
+    saveProgress();
+  }
+
+  function saveProgress(qId, answerInfo) {
+    const data = JSON.parse(localStorage.getItem('techkids') || '{}');
+    data.totalScore          = totalScore;
+    data.correctCount        = correctCount;
+    data.medalCount          = medalCount;
+    data.medals              = data.medals || [];
+    data.answeredQuestions   = [...answeredQuestions];
+    if (qId && answerInfo) {
+      data.answers = data.answers || {};
+      data.answers[qId] = answerInfo;
+    }
+    localStorage.setItem('techkids', JSON.stringify(data));
+  }
+
+  // Restaura visual de questão já respondida mostrando a alternativa correta
+  function restoreAnswered(qId) {
+    const container = document.getElementById(qId);
+    if (!container) return;
+    container.querySelectorAll('button').forEach(b => b.disabled = true);
+
+    const saved = JSON.parse(localStorage.getItem('techkids') || '{}');
+    const answers = saved.answers || {};
+    const info = answers[qId];
+
+    const fb = document.getElementById('fb_' + qId);
+
+    if (info && info.correct) {
+      // Acertou: marca botão correto em verde
+      if (info.type === 'quiz') {
+        const letters = ['A','B','C','D'];
+        const btns = container.querySelectorAll('.option-btn');
+        btns.forEach((b, i) => { if (letters[i] === info.correctKey) b.classList.add('correct'); });
+      } else if (info.type === 'tf') {
+        const tfBtns = container.querySelectorAll('.tf-btn');
+        tfBtns.forEach(b => { if (b.classList.contains('verdadeiro') === info.correctKey) b.classList.add('correct'); });
+      }
+      if (fb) {
+        fb.className = 'feedback correct-fb show';
+        fb.innerHTML = '✅ Você acertou esta questão!';
+      }
+    } else if (info && !info.correct) {
+      // Errou: mostra botão errado + destaca o correto
+      if (info.type === 'quiz') {
+        const letters = ['A','B','C','D'];
+        const btns = container.querySelectorAll('.option-btn');
+        btns.forEach((b, i) => {
+          if (letters[i] === info.chosenKey) b.classList.add('wrong');
+          if (letters[i] === info.correctKey) b.classList.add('correct');
+        });
+      } else if (info.type === 'tf') {
+        const tfBtns = container.querySelectorAll('.tf-btn');
+        tfBtns.forEach(b => {
+          const isVerd = b.classList.contains('verdadeiro');
+          if (isVerd === info.chosenKey) b.classList.add('wrong');
+          if (isVerd === info.correctKey) b.classList.add('correct');
+        });
+      }
+      if (fb) {
+        fb.className = 'feedback wrong-fb show';
+        fb.innerHTML = `❌ Você errou. A resposta correta está destacada em verde. ${getAulaLink(qId)}`;
+      }
+    } else {
+      // Sem detalhe salvo (fallback)
+      if (fb) {
+        fb.className = 'feedback show';
+        fb.style.cssText = 'background:#f0f0f0;border-color:#ccc;color:#666;display:flex;align-items:center;gap:0.5rem;';
+        fb.innerHTML = '🔒 Questão já respondida.';
+      }
+    }
+  }
+
+  function revealCorrectAnswer(qId, groupKey) {
+    const container = document.getElementById(qId);
+    if (!container) return;
+    container.querySelectorAll('button').forEach(b => b.disabled = true);
+    const fb = document.getElementById('fb_' + qId);
+    if (groupKey.startsWith('quiz_')) {
+      const btns = container.querySelectorAll('.option-btn');
+      const m = (btns[0]?.getAttribute('onclick') || '').match(/'([A-D])'\)/);
+      if (!m) return;
+      const letters = ['A','B','C','D'];
+      btns.forEach((b, i) => { if (letters[i] === m[1]) b.classList.add('correct'); });
+    } else if (groupKey.startsWith('tf_')) {
+      const btns = container.querySelectorAll('.tf-btn');
+      const m = (btns[0]?.getAttribute('onclick') || '').match(/,(true|false)\)/);
+      if (!m) return;
+      const correctAnswer = m[1] === 'true';
+      btns.forEach(b => { if (b.classList.contains('verdadeiro') === correctAnswer) b.classList.add('correct'); });
+    }
+    if (fb) { fb.className = 'feedback correct-fb show'; fb.innerHTML = '🔍 Revisão: resposta correta destacada em verde.'; }
+  }
+
+  function revealMatchPairs(resultId) {
+    const resultEl = document.getElementById(resultId);
+    if (!resultEl) return;
+    const container = resultEl.previousElementSibling;
+    if (!container || !container.classList.contains('match-container')) return;
+    container.querySelectorAll('[data-match="left"]').forEach(left => {
+      const right = container.querySelector(`[data-match="right"][data-id="${left.dataset.id}"]`);
+      if (right) {
+        left.classList.add('matched-correct'); right.classList.add('matched-correct');
+        left.style.pointerEvents = 'none'; right.style.pointerEvents = 'none';
+      }
+    });
+    resultEl.innerHTML = '🏆 Você já conquistou esta medalha! Confira os pares corretos acima.';
+    resultEl.style.color = '#28a745';
+  }
+
+  function awardMedal(key) {
+    const def = medalDefs[key];
+    if (!def) return;
+
+    const data = JSON.parse(localStorage.getItem('techkids') || '{}');
+    data.medals = data.medals || [];
+
+    // Evita duplicata
+    if (data.medals.find(m => m.name === def.name)) return;
+
+    data.medals.push({ ...def, date: new Date().toLocaleDateString('pt-BR') });
+    data.medalCount = data.medals.length;
+    localStorage.setItem('techkids', JSON.stringify(data));
+
+    medalCount++;
+    document.getElementById('medal-count').textContent = medalCount;
+
+    // Mostra modal
+    document.getElementById('modalEmoji').textContent     = def.emoji;
+    document.getElementById('modalMedalName').textContent = def.emoji + ' ' + def.name;
+    document.getElementById('modalDesc').textContent      = def.desc;
+    document.getElementById('medalOverlay').classList.add('show');
+  }
+
+  function closeMedalModal() {
+    document.getElementById('medalOverlay').classList.remove('show');
+  }
+
+  document.getElementById('medalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeMedalModal();
+  });
+
+  // Verifica se todas as questões de um grupo foram respondidas e TODAS acertadas
+  function checkGroupComplete(questionId) {
+    for (const [groupKey, ids] of Object.entries(quizGroups)) {
+      if (!ids.includes(questionId)) continue;
+      const allAnswered = ids.every(id => answeredQuestions.has(id));
+      if (!allAnswered) return;
+      const allCorrect = groupCorrect[groupKey] === ids.length;
+      if (allCorrect) {
+        setTimeout(() => awardMedal(groupKey), 600);
+      }
+    }
+  }
+
+  // Descobre qual módulo (1-4) pertence uma questão e retorna o link da aula
+  function getAulaLink(questionId) {
+    const mod = questionId.match(/[qt]f?(\d)/)?.[1] || questionId.match(/q(\d)/)?.[1];
+    const links = { '1': 'aulas-modulo1.html', '2': 'aulas-modulo2.html', '3': 'aulas-modulo3.html', '4': 'aulas-modulo4.html' };
+    const labels = { '1': 'O Computador', '2': 'Teclado e Mouse', '3': 'Internet Segura', '4': 'Criando com PC' };
+    return mod
+      ? `<a href="${links[mod]}" style="color:#721c24;font-weight:800;text-decoration:underline;">📚 Estudar: ${labels[mod]}</a>`
+      : `<a href="aulas.html" style="color:#721c24;font-weight:800;text-decoration:underline;">📚 Voltar às Aulas</a>`;
+  }
+
+  // ── Quiz múltipla escolha ──────────────────────────────────────────────────
+  function checkQuiz(btn, questionId, correctLetter) {
+    const container = document.getElementById(questionId);
+    const buttons   = container.querySelectorAll('.option-btn');
+    const letters   = ['A','B','C','D'];
+    const clickedLetter = letters[Array.from(buttons).indexOf(btn)];
+    const feedback  = document.getElementById('fb_' + questionId);
+
+    if (answeredQuestions.has(questionId)) return;
+
+    buttons.forEach(b => b.disabled = true);
+
+    if (clickedLetter === correctLetter) {
+      answeredQuestions.add(questionId);
+      btn.classList.add('correct');
+      feedback.className = 'feedback correct-fb show';
+      feedback.innerHTML = '✅ Correto! Muito bem!';
+      updateScore(10);
+      saveProgress(questionId, { type:'quiz', correct:true, correctKey:correctLetter, chosenKey:clickedLetter });
+      for (const [g, ids] of Object.entries(quizGroups)) {
+        if (ids.includes(questionId)) { groupCorrect[g]++; break; }
+      }
+      checkGroupComplete(questionId);
+    } else {
+      feedback.className = 'feedback wrong-fb show';
+      feedback.innerHTML = `❌ Ops! Essa não era a certa. Tente de novo! ${getAulaLink(questionId)}`;
+      setTimeout(() => {
+        buttons.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
+        feedback.classList.remove('show');
+      }, 1800);
+    }
+  }
+
+  // ── Verdadeiro ou Falso ────────────────────────────────────────────────────
+  function checkTF(btn, questionId, correctAnswer) {
+    const container = document.getElementById(questionId);
+    const tfBtns    = container.querySelectorAll('.tf-btn');
+    const feedback  = document.getElementById('fb_' + questionId);
+    const isVerdadeiro = btn.classList.contains('verdadeiro');
+
+    if (answeredQuestions.has(questionId)) return;
+
+    tfBtns.forEach(b => b.disabled = true);
+
+    if (isVerdadeiro === correctAnswer) {
+      answeredQuestions.add(questionId);
+      btn.classList.add('correct');
+      feedback.className = 'feedback correct-fb show';
+      feedback.innerHTML = '✅ Correto! Você acertou!';
+      updateScore(8);
+      saveProgress(questionId, { type:'tf', correct:true, correctKey:correctAnswer, chosenKey:isVerdadeiro });
+      for (const [g, ids] of Object.entries(quizGroups)) {
+        if (ids.includes(questionId)) { groupCorrect[g]++; break; }
+      }
+      checkGroupComplete(questionId);
+    } else {
+      feedback.className = 'feedback wrong-fb show';
+      feedback.innerHTML = `❌ Ops! Essa não era a certa. Tente de novo! ${getAulaLink(questionId)}`;
+      setTimeout(() => {
+        tfBtns.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
+        feedback.classList.remove('show');
+      }, 1800);
+    }
+  }
+
+  // ── Jogo de Ligar ─────────────────────────────────────────────────────────
+  let selectedLeft = null;
+
+  // Mapa: id do elemento resultado → chave da medalha
+  const matchMedalKey = {
+    'match1-result': 'match_1',
+    'match2-result': 'match_2',
+    'match3-result': 'match_3',
+    'match4-result': 'match_4',
+  };
+
+  function selectMatch(item) {
+    const side = item.dataset.match;
+    if (item.classList.contains('matched-correct')) return;
+
+    if (side === 'left') {
+      document.querySelectorAll('[data-match="left"].selected').forEach(el => el.classList.remove('selected'));
+      item.classList.add('selected');
+      selectedLeft = item;
+    } else if (side === 'right' && selectedLeft) {
+      const leftId  = selectedLeft.dataset.id;
+      const rightId = item.dataset.id;
+
+      if (leftId === rightId) {
+        selectedLeft.classList.remove('selected');
+        selectedLeft.classList.add('matched-correct');
+        item.classList.add('matched-correct');
+        selectedLeft.style.pointerEvents = 'none';
+        item.style.pointerEvents = 'none';
+        updateScore(5);
+
+        const container = item.closest('.match-container');
+        const total     = container.querySelectorAll('[data-match="left"]').length;
+        const matched   = container.querySelectorAll('.matched-correct').length / 2;
+
+        if (matched === total) {
+          const resultEl = container.nextElementSibling;
+          if (resultEl) {
+            resultEl.innerHTML = '🏆 Parabéns! Você ligou tudo corretamente!';
+            resultEl.style.color = '#28a745';
+            setTimeout(() => awardMedal(matchMedalKey[resultEl.id]), 400);
+          }
+        }
+      } else {
+        selectedLeft.classList.add('matched-wrong');
+        item.classList.add('matched-wrong');
+        setTimeout(() => {
+          selectedLeft.classList.remove('matched-wrong', 'selected');
+          item.classList.remove('matched-wrong');
+        }, 500);
+      }
+      selectedLeft = null;
+    }
+  }
+
+  // ── Navegação ──────────────────────────────────────────────────────────────
+  function showModule(id, btn) {
+    document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+  }
+
+  function retryQuiz() { location.reload(); }
+
+  const hash = window.location.hash.slice(1);
+  if      (hash === 'modulo2' || hash === 'a2') document.querySelectorAll('.tab-btn')[1].click();
+  else if (hash === 'modulo3' || hash === 'a3') document.querySelectorAll('.tab-btn')[2].click();
+  else if (hash === 'modulo4' || hash === 'a4') document.querySelectorAll('.tab-btn')[3].click();
+</script>
+</body>
+</html>

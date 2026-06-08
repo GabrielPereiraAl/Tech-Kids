@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aulas — Módulo 1: O Computador - TechKids</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amarelo: #FFD93D;
+    --laranja: #FF6B35;
+    --verde: #06D6A0;
+    --azul: #118AB2;
+    --roxo: #845EC2;
+    --rosa: #FF6B9D;
+    --fundo: #FFF9F0;
+    --escuro: #1A1A2E;
+    --card-shadow: 0 6px 0 rgba(0,0,0,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--fundo); color: var(--escuro); }
+
+  nav {
+    background: var(--escuro); padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 0 var(--amarelo);
+  }
+  .logo { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; color: var(--amarelo); text-decoration: none; }
+  .logo span { color: var(--verde); }
+  .nav-links { display: flex; gap: 0.5rem; }
+  .nav-links a { color: white; text-decoration: none; font-weight: 700; padding: 0.4rem 1rem; border-radius: 20px; transition: all 0.2s; font-size: 0.95rem; }
+  .nav-links a:hover { background: var(--amarelo); color: var(--escuro); }
+  .nav-links a.active { background: var(--laranja); color: white; }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--azul), var(--roxo));
+    color: white; text-align: center; padding: 3rem 2rem;
+  }
+  .page-header h1 { font-family: 'Baloo 2', cursive; font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .page-header p { font-size: 1.1rem; opacity: 0.9; }
+
+  /* MODULE TABS */
+  .module-tabs {
+    display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+    padding: 2rem 1rem 0; max-width: 900px; margin: 0 auto;
+  }
+  .tab-btn {
+    padding: 0.7rem 1.5rem; border-radius: 40px;
+    font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; border: 3px solid var(--escuro);
+    background: white; color: var(--escuro);
+    transition: all 0.2s; box-shadow: 0 4px 0 rgba(0,0,0,0.12);
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .tab-btn:hover, .tab-btn:active { transform: translateY(-3px); }
+  .tab-btn.active { background: var(--escuro); color: var(--amarelo); }
+
+  /* LESSON CONTENT */
+  .lesson-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+
+  .module-panel { display: none; }
+  .module-panel.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  .module-intro {
+    background: white; border-radius: 20px; padding: 2rem;
+    border: 3px solid var(--escuro); box-shadow: var(--card-shadow);
+    margin-bottom: 2rem; display: flex; gap: 1.5rem; align-items: center;
+    flex-wrap: wrap;
+  }
+  .module-intro-icon { font-size: 4rem; flex-shrink: 0; }
+  .module-intro h2 { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.4rem; }
+  .module-intro p { color: #555; line-height: 1.6; font-size: 1rem; }
+
+  .lessons-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .lesson-item {
+    background: white; border-radius: 16px; border: 2px solid #e0e0e0;
+    overflow: hidden; transition: all 0.2s;
+  }
+  .lesson-item:hover, .lesson-item:active { border-color: var(--azul); box-shadow: 0 4px 12px rgba(17,138,178,0.15); }
+
+  .lesson-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.2rem 1.5rem; cursor: pointer; user-select: none;
+  }
+  .lesson-num {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--escuro); color: var(--amarelo);
+    font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .lesson-info { flex: 1; }
+  .lesson-info h4 { font-weight: 800; font-size: 1rem; margin-bottom: 0.2rem; }
+  .lesson-info span { font-size: 0.85rem; color: #888; }
+  .lesson-arrow { font-size: 1.2rem; transition: transform 0.3s; }
+  .lesson-item.open .lesson-arrow { transform: rotate(90deg); }
+
+  .lesson-body {
+    display: none; padding: 0 1.5rem 1.5rem; border-top: 2px dashed #eee;
+    margin-top: 0; padding-top: 1.2rem;
+  }
+  .lesson-item.open .lesson-body { display: block; animation: fadeIn 0.3s ease; }
+
+  .content-block { margin-bottom: 1.5rem; }
+  .content-block h5 {
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem;
+  }
+  .content-block p { color: #444; line-height: 1.7; font-size: 0.95rem; margin-bottom: 0.8rem; }
+
+  .parts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 0.8rem; margin: 1rem 0; }
+  .part-card {
+    background: var(--fundo); border-radius: 12px; padding: 1rem;
+    text-align: center; border: 2px solid #e0e0e0; transition: all 0.2s;
+  }
+  .part-card:hover, .part-card:active { border-color: var(--azul); transform: translateY(-3px); }
+  .part-card .part-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+  .part-card h6 { font-weight: 800; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .part-card p { font-size: 0.78rem; color: #666; }
+
+  .tip-box {
+    background: linear-gradient(135deg, #FFF3CD, #FFEAA7);
+    border: 2px solid var(--amarelo); border-radius: 12px;
+    padding: 1rem 1.2rem; display: flex; gap: 0.8rem; align-items: flex-start;
+  }
+  .tip-box .tip-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .tip-box p { font-size: 0.9rem; color: #5a4000; line-height: 1.6; }
+
+  .fun-fact {
+    background: linear-gradient(135deg, #E8F5FF, #D1ECFF);
+    border: 2px solid var(--azul); border-radius: 12px;
+    padding: 1rem 1.2rem; display: flex; gap: 0.8rem; align-items: flex-start;
+    margin: 1rem 0;
+  }
+  .fun-fact p { font-size: 0.9rem; color: #0a4d6e; line-height: 1.6; }
+
+  .quiz-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--verde); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.5rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #04a07a; transition: all 0.2s;
+    text-decoration: none; margin-top: 1rem;
+  }
+  .quiz-btn:hover, .quiz-btn:active { transform: translateY(-2px); box-shadow: 0 6px 0 #04a07a; }
+
+  .keyboard-map {
+    background: var(--escuro); border-radius: 12px; padding: 1.5rem;
+    margin: 1rem 0; text-align: center;
+  }
+  .key-row { display: flex; gap: 4px; justify-content: center; margin-bottom: 4px; flex-wrap: wrap; }
+  .key {
+    background: #2d2d4e; color: #eee; border: 1px solid #555;
+    border-radius: 4px; padding: 6px 10px; font-family: monospace;
+    font-size: 0.75rem; min-width: 32px; text-align: center;
+    box-shadow: 0 2px 0 #111; transition: all 0.1s; cursor: default;
+  }
+  .key:hover, .key:active { background: var(--amarelo); color: var(--escuro); transform: translateY(-1px); }
+  .key.wide { min-width: 60px; }
+  .key.wider { min-width: 80px; }
+  .key.special { background: #3a3a6e; color: var(--verde); }
+
+  footer {
+    background: var(--escuro); color: rgba(255,255,255,0.7);
+    text-align: center; padding: 2rem; font-size: 0.9rem; margin-top: 3rem;
+  }
+  footer strong { color: var(--amarelo); }
+
+
+  /* === HAMBURGER MENU === */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 0.5rem;
+  }
+  .hamburger span {
+    display: block; width: 26px; height: 3px;
+    background: white; border-radius: 3px; transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  @media (max-width: 600px) {
+    .hamburger { display: flex; }
+    .nav-links {
+      display: none; position: absolute; top: 70px; left: 0; right: 0;
+      background: var(--escuro); flex-direction: column; align-items: stretch;
+      padding: 0.8rem; gap: 0.3rem;
+      border-top: 3px solid var(--amarelo); box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 99;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: block; padding: 0.8rem 1rem; border-radius: 12px; font-size: 1rem; }
+    .module-intro { flex-direction: column; text-align: center; }
+    .parts-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">🖥️ Tech<span>Kids</span></a>
+  <button class="hamburger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-links">
+    <a href="index.html">🏠 Início</a>
+    <a href="aulas.html">📚 Aulas</a>
+    <a href="atividades.html">🎮 Atividades</a>
+    <a href="glossario.html">📖 Glossário</a>
+    <a href="conquistas.html">🏆 Conquistas</a>
+    <a href="sobre.html">ℹ️ Sobre</a>
+  </div>
+</nav>
+
+<div class="page-header" style="background:linear-gradient(135deg, var(--laranja), var(--rosa));">
+  <h1>🖥️ Módulo 1 — O Computador</h1>
+  <p>Leia com atenção e depois faça as atividades!</p>
+</div>
+
+<div class="lesson-container">
+<div class="module-panel active" id="m1">
+    <div class="module-intro">
+      <div class="module-intro-icon">🖥️</div>
+      <div>
+        <h2>Módulo 1 — O Computador</h2>
+        <p>Neste módulo, você vai conhecer todas as partes do computador, entender para que cada uma serve e aprender como elas trabalham juntas. Vamos começar essa aventura!</p>
+      </div>
+    </div>
+    <div class="lessons-list">
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">1</div>
+          <div class="lesson-info">
+            <h4>O que é um computador?</h4>
+            <span>⏱️ 5 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>🤔 O que é um computador?</h5>
+            <p>Um <strong>computador</strong> é uma máquina eletrônica super inteligente que consegue fazer muitas coisas: calcular contas difíceis, guardar fotos e músicas, jogar jogos, enviar mensagens e muito mais!</p>
+            <p>Pensa no computador como um ajudante superpoderoso que faz qualquer coisa que você peça — desde que você saiba como pedir!</p>
+            <div class="fun-fact">
+              <span>💡</span>
+              <p><strong>Você sabia?</strong> O primeiro computador do mundo foi construído em 1946 e era tão grande que ocupava uma sala inteira! Pesava mais de 27 toneladas — igual a 4 elefantes!</p>
+            </div>
+          </div>
+          <div class="content-block">
+            <h5>📦 Tipos de computador</h5>
+            <div class="parts-grid">
+              <div class="part-card">
+                <span class="part-icon">🖥️</span>
+                <h6>Desktop</h6>
+                <p>Fica em cima da mesa, maior e mais potente</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">💻</span>
+                <h6>Notebook</h6>
+                <p>Portátil, tem tela e teclado juntos</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">📱</span>
+                <h6>Tablet</h6>
+                <p>Uma tela touch que você carrega na mão</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">📱</span>
+                <h6>Celular</h6>
+                <p>O menor computador que existe!</p>
+              </div>
+            </div>
+          </div>
+          <a href="atividades-modulo1.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">2</div>
+          <div class="lesson-info">
+            <h4>Partes do computador</h4>
+            <span>⏱️ 7 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>🔩 As peças principais</h5>
+            <p>Assim como nosso corpo tem partes diferentes (cabeça, braços, pernas...), o computador também tem várias partes, cada uma com uma função especial!</p>
+            <div class="parts-grid">
+              <div class="part-card">
+                <span class="part-icon">🖥️</span>
+                <h6>Monitor</h6>
+                <p>A "tela" do computador, onde você vê tudo</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">⌨️</span>
+                <h6>Teclado</h6>
+                <p>Para digitar letras, números e símbolos</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🖱️</span>
+                <h6>Mouse</h6>
+                <p>Move o cursor pela tela e clica nas coisas</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🔲</span>
+                <h6>CPU</h6>
+                <p>O "cérebro" do computador, onde tudo é processado</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">📢</span>
+                <h6>Caixas de Som</h6>
+                <p>Para ouvir músicas, vídeos e sons</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🖨️</span>
+                <h6>Impressora</h6>
+                <p>Imprime em papel o que está na tela</p>
+              </div>
+            </div>
+          </div>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <p><strong>Dica:</strong> As partes que você pode tocar (como teclado, mouse, monitor) se chamam <strong>hardware</strong>. Os programas que você não pode tocar (jogos, aplicativos) se chamam <strong>software</strong>!</p>
+          </div>
+          <a href="atividades-modulo1.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">3</div>
+          <div class="lesson-info">
+            <h4>Ligando e desligando o computador</h4>
+            <span>⏱️ 5 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>⚡ Como ligar o computador</h5>
+            <p>Para ligar um computador, procure o <strong>botão de energia</strong> (⏻). Geralmente ele fica na parte frontal do gabinete (no desktop) ou no canto do teclado (no notebook).</p>
+            <p>Depois de pressionar o botão, o computador demora uns segundinhos para "acordar". Isso se chama <strong>inicialização</strong>!</p>
+          </div>
+          <div class="content-block">
+            <h5>🔴 Como desligar CORRETAMENTE</h5>
+            <p>Nunca aperte o botão de energia para desligar o computador! Isso pode estragar arquivos. O jeito certo é:</p>
+            <p>1️⃣ Clique no botão <strong>Iniciar</strong> (ícone do Windows)<br>
+               2️⃣ Clique em <strong>Desligar</strong><br>
+               3️⃣ Espere o computador se desligar sozinho!</p>
+          </div>
+          <div class="tip-box">
+            <span class="tip-icon">⚠️</span>
+            <p><strong>Importante!</strong> Sempre peça ajuda de um adulto para ligar e desligar o computador até você aprender direitinho!</p>
+          </div>
+          <a href="atividades-modulo1.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">4</div>
+          <div class="lesson-info">
+            <h4>O que é memória do computador?</h4>
+            <span>⏱️ 6 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>🧠 A memória do computador</h5>
+            <p>Assim como a gente tem memória para lembrar de coisas, o computador também tem memória! Existem dois tipos principais:</p>
+            <div class="parts-grid">
+              <div class="part-card">
+                <span class="part-icon">⚡</span>
+                <h6>RAM</h6>
+                <p>Memória temporária — guarda o que está sendo usado agora. Quando desliga, some!</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">💾</span>
+                <h6>HD / SSD</h6>
+                <p>Memória permanente — guarda fotos, jogos e arquivos para sempre!</p>
+              </div>
+            </div>
+            <div class="fun-fact">
+              <span>🎒</span>
+              <p>Pense assim: a RAM é como a sua <strong>mochila escolar</strong> — você coloca o que vai usar hoje. O HD é como o seu <strong>quarto</strong> — onde fica guardado tudo que você tem!</p>
+            </div>
+          </div>
+          <a href="atividades-modulo1.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+      <div class="lesson-item">
+        <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+          <div class="lesson-num">5</div>
+          <div class="lesson-info">
+            <h4>Cuidando do computador</h4>
+            <span>⏱️ 4 min • 📖 Leitura</span>
+          </div>
+          <span class="lesson-arrow">▶</span>
+        </div>
+        <div class="lesson-body">
+          <div class="content-block">
+            <h5>💚 Como cuidar bem do computador</h5>
+            <div class="parts-grid">
+              <div class="part-card">
+                <span class="part-icon">🚫</span>
+                <h6>Sem comida!</h6>
+                <p>Nunca coma perto do teclado</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">💧</span>
+                <h6>Sem água!</h6>
+                <p>Líquidos estragam eletrônicos</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🔌</span>
+                <h6>Desligue bem!</h6>
+                <p>Sempre desligar pelo menu</p>
+              </div>
+              <div class="part-card">
+                <span class="part-icon">🧹</span>
+                <h6>Limpeza!</h6>
+                <p>Limpe com pano seco, sem produtos</p>
+              </div>
+            </div>
+          </div>
+          <a href="atividades-modulo1.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+        </div>
+      </div>
+
+    </div>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:2rem 0;"><a href="aulas.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--escuro);color:var(--amarelo);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.2);">📚 Todas as Aulas</a><a href="aulas-modulo2.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--verde);color:white;border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 #04a07a;">Próximo Módulo →</a></div>
+</div>
+
+<footer>
+  <p>🖥️ <strong>TechKids</strong> • 2025</p>
+</footer>
+
+<script>
+  function showModule(id) {
+    document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    window.location.hash = id;
+  }
+  function toggleLesson(el) {
+    el.classList.toggle('open');
+  }
+  // Handle URL hash
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    const btns = document.querySelectorAll('.tab-btn');
+    if (hash === 'modulo1' || hash === 'm1') {
+      btns[0].click();
+    } else if (hash === 'modulo2' || hash === 'm2') {
+      btns[1].classList.add('active'); btns[0].classList.remove('active');
+      document.getElementById('m1').classList.remove('active');
+      document.getElementById('m2').classList.add('active');
+    } else if (hash === 'modulo3' || hash === 'm3') {
+      btns[2].classList.add('active'); btns[0].classList.remove('active');
+      document.getElementById('m1').classList.remove('active');
+      document.getElementById('m3').classList.add('active');
+    } else if (hash === 'modulo4' || hash === 'm4') {
+      btns[3].classList.add('active'); btns[0].classList.remove('active');
+      document.getElementById('m1').classList.remove('active');
+      document.getElementById('m4').classList.add('active');
+    }
+  }
+</script>
+</body>
+</html>

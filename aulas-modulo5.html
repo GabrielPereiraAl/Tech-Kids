@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aulas — Módulo 5: Inteligência Artificial - TechKids</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amarelo: #FFD93D;
+    --laranja: #FF6B35;
+    --verde: #06D6A0;
+    --azul: #118AB2;
+    --roxo: #845EC2;
+    --rosa: #FF6B9D;
+    --fundo: #FFF9F0;
+    --escuro: #1A1A2E;
+    --card-shadow: 0 6px 0 rgba(0,0,0,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--fundo); color: var(--escuro); }
+
+  nav {
+    background: var(--escuro); padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 0 var(--amarelo);
+  }
+  .logo { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; color: var(--amarelo); text-decoration: none; }
+  .logo span { color: var(--verde); }
+  .nav-links { display: flex; gap: 0.5rem; }
+  .nav-links a { color: white; text-decoration: none; font-weight: 700; padding: 0.4rem 1rem; border-radius: 20px; transition: all 0.2s; font-size: 0.95rem; }
+  .nav-links a:hover { background: var(--amarelo); color: var(--escuro); }
+  .nav-links a.active { background: var(--laranja); color: white; }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--rosa), var(--roxo));
+    color: white; text-align: center; padding: 3rem 2rem;
+  }
+  .page-header h1 { font-family: 'Baloo 2', cursive; font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .page-header p { font-size: 1.1rem; opacity: 0.9; }
+
+  .lesson-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+
+  .module-panel { display: block; }
+
+  .module-intro {
+    background: white; border-radius: 20px; padding: 2rem;
+    border: 3px solid var(--escuro); box-shadow: var(--card-shadow);
+    margin-bottom: 2rem; display: flex; gap: 1.5rem; align-items: center;
+    flex-wrap: wrap;
+  }
+  .module-intro-icon { font-size: 4rem; flex-shrink: 0; }
+  .module-intro h2 { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.4rem; }
+  .module-intro p { color: #555; line-height: 1.6; font-size: 1rem; }
+
+  .lessons-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .lesson-item {
+    background: white; border-radius: 16px; border: 2px solid #e0e0e0;
+    overflow: hidden; transition: all 0.2s;
+  }
+  .lesson-item:hover, .lesson-item:active { border-color: var(--rosa); box-shadow: 0 4px 12px rgba(255,107,157,0.15); }
+
+  .lesson-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.2rem 1.5rem; cursor: pointer; user-select: none;
+  }
+  .lesson-num {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--escuro); color: var(--amarelo);
+    font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .lesson-info { flex: 1; }
+  .lesson-info h4 { font-weight: 800; font-size: 1rem; margin-bottom: 0.2rem; }
+  .lesson-info span { font-size: 0.85rem; color: #888; }
+  .lesson-arrow { font-size: 1.2rem; transition: transform 0.3s; }
+  .lesson-item.open .lesson-arrow { transform: rotate(90deg); }
+
+  .lesson-body {
+    display: none; padding: 0 1.5rem 1.5rem; border-top: 2px dashed #eee;
+    padding-top: 1.2rem;
+  }
+  .lesson-item.open .lesson-body { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  .content-block { margin-bottom: 1.5rem; }
+  .content-block h5 {
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem;
+  }
+  .content-block p { color: #444; line-height: 1.7; font-size: 0.95rem; margin-bottom: 0.8rem; }
+
+  .parts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 0.8rem; margin: 1rem 0; }
+  .part-card {
+    background: var(--fundo); border-radius: 12px; padding: 1rem;
+    text-align: center; border: 2px solid #e0e0e0; transition: all 0.2s;
+  }
+  .part-card:hover, .part-card:active { border-color: var(--rosa); transform: translateY(-3px); }
+  .part-card .part-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+  .part-card h6 { font-weight: 800; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .part-card p { font-size: 0.78rem; color: #666; }
+
+  .tip-box {
+    background: linear-gradient(135deg, #FFF3CD, #FFEAA7);
+    border: 2px solid var(--amarelo); border-radius: 12px;
+    padding: 1rem 1.2rem; display: flex; gap: 0.8rem; align-items: flex-start;
+    margin: 1rem 0;
+  }
+  .tip-box .tip-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .tip-box p { font-size: 0.9rem; color: #5a4000; line-height: 1.6; }
+
+  .fun-fact {
+    background: linear-gradient(135deg, #FFE8F5, #FFD1EC);
+    border: 2px solid var(--rosa); border-radius: 12px;
+    padding: 1rem 1.2rem; display: flex; gap: 0.8rem; align-items: flex-start;
+    margin: 1rem 0;
+  }
+  .fun-fact p { font-size: 0.9rem; color: #8a0040; line-height: 1.6; }
+
+  .quiz-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--verde); color: white; border: none; border-radius: 30px;
+    padding: 0.7rem 1.5rem; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 0 #04a07a; transition: all 0.2s;
+    text-decoration: none; margin-top: 1rem; display: inline-flex;
+  }
+  .quiz-btn:hover, .quiz-btn:active { transform: translateY(-2px); box-shadow: 0 6px 0 #04a07a; }
+
+  footer {
+    background: var(--escuro); color: rgba(255,255,255,0.7);
+    text-align: center; padding: 2rem; font-size: 0.9rem; margin-top: 3rem;
+  }
+  footer strong { color: var(--amarelo); }
+
+  /* === HAMBURGER MENU === */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 0.5rem;
+  }
+  .hamburger span {
+    display: block; width: 26px; height: 3px;
+    background: white; border-radius: 3px; transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  @media (max-width: 600px) {
+    .hamburger { display: flex; }
+    .nav-links {
+      display: none; position: absolute; top: 70px; left: 0; right: 0;
+      background: var(--escuro); flex-direction: column; align-items: stretch;
+      padding: 0.8rem; gap: 0.3rem;
+      border-top: 3px solid var(--amarelo); box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 99;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: block; padding: 0.8rem 1rem; border-radius: 12px; font-size: 1rem; }
+    .module-intro { flex-direction: column; text-align: center; }
+    .parts-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">🖥️ Tech<span>Kids</span></a>
+  <button class="hamburger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-links">
+    <a href="index.html">🏠 Início</a>
+    <a href="aulas.html" class="active">📚 Aulas</a>
+    <a href="atividades.html">🎮 Atividades</a>
+    <a href="glossario.html">📖 Glossário</a>
+    <a href="conquistas.html">🏆 Conquistas</a>
+    <a href="sobre.html">ℹ️ Sobre</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>🤖 Módulo 5 — Inteligência Artificial</h1>
+  <p>Leia com atenção e depois faça as atividades!</p>
+</div>
+
+<div class="lesson-container">
+<div class="module-panel" id="m5">
+  <div class="module-intro">
+    <div class="module-intro-icon">🤖</div>
+    <div>
+      <h2>Módulo 5 — Inteligência Artificial</h2>
+      <p>A Inteligência Artificial está em todo lugar — nos celulares, nos jogos, na música que você ouve! Vamos descobrir o que é, como funciona e como usá-la com responsabilidade.</p>
+    </div>
+  </div>
+
+  <div class="lessons-list">
+
+    <!-- Lição 1 -->
+    <div class="lesson-item">
+      <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+        <div class="lesson-num">1</div>
+        <div class="lesson-info"><h4>O que é Inteligência Artificial?</h4><span>⏱️ 6 min • 📖 Leitura</span></div>
+        <span class="lesson-arrow">▶</span>
+      </div>
+      <div class="lesson-body">
+        <div class="content-block">
+          <h5>🧠 Uma máquina que aprende!</h5>
+          <p>A <strong>Inteligência Artificial</strong> (IA) é quando um computador é programado para aprender e tomar decisões — quase como se fosse um cérebro artificial!</p>
+          <p>Pensa assim: você aprendeu a reconhecer um cachorro vendo muitos cachorros diferentes. A IA faz a mesma coisa — ela vê milhares de fotos de cachorros até aprender a reconhecê-los sozinha!</p>
+          <div class="parts-grid">
+            <div class="part-card"><span class="part-icon">👶</span><h6>Humano</h6><p>Aprende com experiências e exemplos</p></div>
+            <div class="part-card"><span class="part-icon">🤖</span><h6>IA</h6><p>Aprende analisando muitos dados</p></div>
+            <div class="part-card"><span class="part-icon">📚</span><h6>Treinamento</h6><p>Quanto mais exemplos, mais esperta!</p></div>
+            <div class="part-card"><span class="part-icon">💡</span><h6>Resultado</h6><p>Toma decisões sozinha depois</p></div>
+          </div>
+        </div>
+        <div class="fun-fact">
+          <span>🤯</span>
+          <p><strong>Curiosidade!</strong> O termo "Inteligência Artificial" foi criado em 1956. Mas só nos últimos anos ela ficou tão poderosa que consegue conversar, desenhar e escrever!</p>
+        </div>
+        <a href="atividades-modulo5.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+      </div>
+    </div>
+
+    <!-- Lição 2 -->
+    <div class="lesson-item">
+      <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+        <div class="lesson-num">2</div>
+        <div class="lesson-info"><h4>Como a IA aprende?</h4><span>⏱️ 6 min • 📖 Leitura</span></div>
+        <span class="lesson-arrow">▶</span>
+      </div>
+      <div class="lesson-body">
+        <div class="content-block">
+          <h5>📊 Aprendendo com dados!</h5>
+          <p>A IA aprende a partir de uma enorme quantidade de informações chamadas de <strong>dados</strong>. Podem ser fotos, textos, sons, vídeos — qualquer coisa!</p>
+          <p>Esse processo de aprendizado se chama <strong>Machine Learning</strong> (em português: "aprendizado de máquina"). A IA testa, erra, corrige e melhora — igualzinho a quando você treina para jogar um jogo!</p>
+          <div class="parts-grid">
+            <div class="part-card"><span class="part-icon">📥</span><h6>Dados</h6><p>A IA recebe muitos exemplos</p></div>
+            <div class="part-card"><span class="part-icon">🔄</span><h6>Treino</h6><p>Testa e aprende com os erros</p></div>
+            <div class="part-card"><span class="part-icon">✅</span><h6>Acerto</h6><p>Melhora a cada tentativa</p></div>
+            <div class="part-card"><span class="part-icon">🚀</span><h6>Uso</h6><p>Aplica o que aprendeu</p></div>
+          </div>
+        </div>
+        <div class="tip-box">
+          <span class="tip-icon">🎮</span>
+          <p><strong>Exemplo legal!</strong> Nos jogos, a IA aprende como você joga e vai ficando mais difícil conforme você melhora. Ela se adapta a você!</p>
+        </div>
+        <a href="atividades-modulo5.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+      </div>
+    </div>
+
+    <!-- Lição 3 -->
+    <div class="lesson-item">
+      <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+        <div class="lesson-num">3</div>
+        <div class="lesson-info"><h4>IA no dia a dia</h4><span>⏱️ 7 min • 📖 Leitura</span></div>
+        <span class="lesson-arrow">▶</span>
+      </div>
+      <div class="lesson-body">
+        <div class="content-block">
+          <h5>🌍 Ela já está em todo lugar!</h5>
+          <p>Você provavelmente já usou IA hoje sem saber! Veja alguns exemplos do dia a dia:</p>
+          <div class="parts-grid">
+            <div class="part-card"><span class="part-icon">🎵</span><h6>Música</h6><p>Plataformas sugerem músicas que você vai gostar</p></div>
+            <div class="part-card"><span class="part-icon">🎬</span><h6>Filmes</h6><p>Apps recomendam séries baseadas no que você assistiu</p></div>
+            <div class="part-card"><span class="part-icon">🔊</span><h6>Assistentes</h6><p>Siri, Alexa e Google respondem quando você fala</p></div>
+            <div class="part-card"><span class="part-icon">📷</span><h6>Câmera</h6><p>Reconhece rostos e melhora fotos automaticamente</p></div>
+            <div class="part-card"><span class="part-icon">🌐</span><h6>Tradução</h6><p>Traduz textos de um idioma para outro na hora</p></div>
+            <div class="part-card"><span class="part-icon">🚗</span><h6>Carros</h6><p>Carros autônomos usam IA para dirigir sozinhos</p></div>
+          </div>
+        </div>
+        <div class="fun-fact">
+          <span>😲</span>
+          <p><strong>Você sabia?</strong> O filtro que deixa sua foto mais bonita no celular também usa IA! Ela analisa sua foto e aplica melhorias automaticamente.</p>
+        </div>
+        <a href="atividades-modulo5.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+      </div>
+    </div>
+
+    <!-- Lição 4 -->
+    <div class="lesson-item">
+      <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+        <div class="lesson-num">4</div>
+        <div class="lesson-info"><h4>IA e criatividade</h4><span>⏱️ 6 min • 📖 Leitura</span></div>
+        <span class="lesson-arrow">▶</span>
+      </div>
+      <div class="lesson-body">
+        <div class="content-block">
+          <h5>🎨 Quando a IA cria!</h5>
+          <p>A IA não só analisa e responde — ela também pode <strong>criar coisas novas</strong>! Isso se chama <strong>IA Generativa</strong>.</p>
+          <div class="parts-grid">
+            <div class="part-card"><span class="part-icon">🖼️</span><h6>Imagens</h6><p>Cria desenhos e fotos a partir de descrições</p></div>
+            <div class="part-card"><span class="part-icon">✍️</span><h6>Textos</h6><p>Escreve histórias, poemas e respostas</p></div>
+            <div class="part-card"><span class="part-icon">🎶</span><h6>Músicas</h6><p>Compõe músicas em diferentes estilos</p></div>
+            <div class="part-card"><span class="part-icon">💬</span><h6>Conversas</h6><p>Chatbots conversam como pessoas reais</p></div>
+          </div>
+          <p>Ferramentas como o <strong>ChatGPT</strong>, que você pode ter ouvido falar, são exemplos de IA Generativa. Você escreve uma pergunta e ela responde como se fosse um humano!</p>
+        </div>
+        <div class="tip-box">
+          <span class="tip-icon">🌟</span>
+          <p><strong>Importante saber!</strong> Mesmo que a IA crie coisas, ela precisa de um humano para dar a ideia e verificar se o resultado está correto. Você é o criador — a IA é a ferramenta!</p>
+        </div>
+        <a href="atividades-modulo5.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+      </div>
+    </div>
+
+    <!-- Lição 5 -->
+    <div class="lesson-item">
+      <div class="lesson-header" onclick="toggleLesson(this.closest('.lesson-item'))">
+        <div class="lesson-num">5</div>
+        <div class="lesson-info"><h4>Usando IA com responsabilidade</h4><span>⏱️ 7 min • 📖 Leitura</span></div>
+        <span class="lesson-arrow">▶</span>
+      </div>
+      <div class="lesson-body">
+        <div class="content-block">
+          <h5>⚖️ IA tem superpoderes — use com cuidado!</h5>
+          <p>Assim como a internet, a IA pode ser usada de formas boas e ruins. É importante conhecer os cuidados:</p>
+          <div class="parts-grid">
+            <div class="part-card"><span class="part-icon">🔍</span><h6>Verificar</h6><p>A IA pode errar — sempre confira as informações</p></div>
+            <div class="part-card"><span class="part-icon">🔒</span><h6>Privacidade</h6><p>Nunca compartilhe dados pessoais com IAs</p></div>
+            <div class="part-card"><span class="part-icon">🚫</span><h6>Fake news</h6><p>Imagens e vídeos falsos podem ser criados por IA</p></div>
+            <div class="part-card"><span class="part-icon">👨‍👩‍👧</span><h6>Adulto</h6><p>Peça ajuda de um adulto ao usar ferramentas de IA</p></div>
+          </div>
+        </div>
+        <div class="fun-fact">
+          <span>🤖</span>
+          <p><strong>IA boa x IA ruim:</strong> Quando a IA ajuda médicos a encontrar doenças, é incrível! Quando alguém usa IA para criar fotos falsas e enganar pessoas, é perigoso. O que faz a diferença é como os humanos escolhem usá-la.</p>
+        </div>
+        <div class="tip-box">
+          <span class="tip-icon">🌟</span>
+          <p><strong>Desafio final:</strong> Pense em 3 maneiras em que a IA poderia ajudar sua escola ou sua família. Conte para alguém próximo!</p>
+        </div>
+        <a href="atividades-modulo5.html" class="quiz-btn">🎯 Fazer Atividade desta Lição</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:2rem 0;">
+    <a href="aulas-modulo4.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:white;color:var(--escuro);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.12);">← Módulo anterior</a>
+    <a href="aulas.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--escuro);color:var(--amarelo);border:3px solid var(--escuro);border-radius:30px;padding:0.7rem 1.5rem;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,0.2);">📚 Todas as Aulas</a>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>🖥️ <strong>TechKids</strong> • 2025</p>
+</footer>
+
+<script>
+  function toggleLesson(el) { el.classList.toggle('open'); }
+
+  function toggleNav() {
+    document.querySelector('.hamburger').classList.toggle('open');
+    document.querySelector('.nav-links').classList.toggle('open');
+  }
+</script>
+</body>
+</html>
