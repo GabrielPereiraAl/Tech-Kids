@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\TmGab\\\\OneDrive\\\\Desktop\\\\Projeto Faculdade\" -Recurse)",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "Bash(powershell -Command \"\\(Get-Content aulas.html\\) -replace 'href=\\\\\"atividades.html\\\\\" class=\\\\\"quiz-btn\\\\\"', 'href=\\\\\"atividades.html\\\\\" class=\\\\\"quiz-btn\\\\\"' | Set-Content aulas.html\")",
+      "Bash(powershell -Command ' *)"
+    ]
+  }
+}
