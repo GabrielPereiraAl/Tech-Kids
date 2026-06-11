@@ -240,6 +240,7 @@
   <p>🖥️ <strong>TechKids</strong> • 2026</p>
 </footer>
 
+<script src="script/global.js"></script>
 <script>
   const _saved = JSON.parse(localStorage.getItem('techkids') || '{}');
   let totalScore   = _saved.totalScore   || 0;
@@ -495,11 +496,6 @@
     });
     const res = document.getElementById(dmId + '-result');
     if (res) { res.innerHTML = '🏆 Você já conquistou esta medalha! Veja as respostas corretas acima.'; res.style.color = '#28a745'; }
-  }
-
-  function toggleNav() {
-    document.querySelector('.hamburger').classList.toggle('open');
-    document.querySelector('.nav-links').classList.toggle('open');
   }
 </script>
 </body>
