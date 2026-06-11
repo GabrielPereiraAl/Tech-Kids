@@ -166,27 +166,56 @@
       </div>
     </div>
 
-    <!-- Atividade 3.3 - Correspondência Navegadores -->
+    <!-- Atividade 3.3 - Qual é o navegador? -->
     <div class="activity-card">
-      <div class="activity-title">🔗 Combine os Navegadores!</div>
-      <div class="activity-subtitle">Ligue o navegador à sua descrição • 4 pares</div>
-      <div class="match-container">
-        <div class="match-col">
-          <h6>Navegador</h6>
-          <div class="match-item" data-match="left" data-id="chrome" onclick="selectMatch(this)">🌍 Chrome</div>
-          <div class="match-item" data-match="left" data-id="firefox" onclick="selectMatch(this)">🦊 Firefox</div>
-          <div class="match-item" data-match="left" data-id="edge" onclick="selectMatch(this)">🔵 Edge</div>
-          <div class="match-item" data-match="left" data-id="safari" onclick="selectMatch(this)">🧭 Safari</div>
+      <div class="activity-title">🔍 Qual é o navegador?</div>
+      <div class="activity-subtitle">Selecione o navegador correto para cada descrição • 4 pares • 5 pontos cada</div>
+      <div class="dropdown-match" id="dm3">
+        <div class="dm-row">
+          <div class="dm-label">Do Google, muito popular</div>
+          <select class="dm-select" data-correct="chrome">
+            <option value="">— Selecione —</option>
+            <option value="chrome">🌍 Chrome</option>
+            <option value="firefox">🦊 Firefox</option>
+            <option value="edge">🔵 Edge</option>
+            <option value="safari">🧭 Safari</option>
+          </select>
         </div>
-        <div class="match-col">
-          <h6>Descrição</h6>
-          <div class="match-item" data-match="right" data-id="safari" onclick="selectMatch(this)">Para Mac e iPhone</div>
-          <div class="match-item" data-match="right" data-id="chrome" onclick="selectMatch(this)">Do Google, muito popular</div>
-          <div class="match-item" data-match="right" data-id="edge" onclick="selectMatch(this)">Vem instalado no Windows</div>
-          <div class="match-item" data-match="right" data-id="firefox" onclick="selectMatch(this)">Rápido, seguro e independente</div>
+        <div class="dm-row">
+          <div class="dm-label">Rápido, seguro e independente</div>
+          <select class="dm-select" data-correct="firefox">
+            <option value="">— Selecione —</option>
+            <option value="chrome">🌍 Chrome</option>
+            <option value="firefox">🦊 Firefox</option>
+            <option value="edge">🔵 Edge</option>
+            <option value="safari">🧭 Safari</option>
+          </select>
+        </div>
+        <div class="dm-row">
+          <div class="dm-label">Vem instalado no Windows</div>
+          <select class="dm-select" data-correct="edge">
+            <option value="">— Selecione —</option>
+            <option value="chrome">🌍 Chrome</option>
+            <option value="firefox">🦊 Firefox</option>
+            <option value="edge">🔵 Edge</option>
+            <option value="safari">🧭 Safari</option>
+          </select>
+        </div>
+        <div class="dm-row">
+          <div class="dm-label">Para Mac e iPhone</div>
+          <select class="dm-select" data-correct="safari">
+            <option value="">— Selecione —</option>
+            <option value="chrome">🌍 Chrome</option>
+            <option value="firefox">🦊 Firefox</option>
+            <option value="edge">🔵 Edge</option>
+            <option value="safari">🧭 Safari</option>
+          </select>
         </div>
       </div>
-      <div id="match3-result" style="margin-top:1rem;font-weight:700;"></div>
+      <div style="margin-top:1.2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+        <button class="check-btn" onclick="checkDropdownMatch('dm3','match_3')">✅ Verificar respostas</button>
+        <div id="dm3-result" style="font-weight:700;font-size:0.95rem;"></div>
+      </div>
     </div>
 </div>
 
@@ -233,10 +262,7 @@
       if (def && _earned.has(def.name))
         ids.forEach(qId => { if (!answeredQuestions.has(qId)) revealCorrectAnswer(qId, gKey); });
     });
-    ['match_1','match_2','match_3','match_4'].forEach(key => {
-      const def = medalDefs[key];
-      if (def && _earned.has(def.name)) revealMatchPairs('match' + key.split('_')[1] + '-result');
-    });
+    if (medalDefs['match_3'] && _earned.has(medalDefs['match_3'].name)) revealDropdownMatch('dm3');
   });
 
   // ── Mapa completo de medalhas ──────────────────────────────────────────────
@@ -252,7 +278,7 @@
     match_2: { emoji: '⌨️', name: 'Rei dos Atalhos',        desc: 'Você combinou todos os atalhos de teclado às suas funções!' },
     quiz_3:  { emoji: '🔒', name: 'Guardião da Net',        desc: 'Você acertou todas as perguntas do Quiz do Módulo 3!' },
     tf_3:    { emoji: '🛡️', name: 'Protetor Digital',       desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 3!' },
-    match_3: { emoji: '🌐', name: 'Navegador Seguro',       desc: 'Você combinou todos os navegadores às suas descrições!' },
+    match_3: { emoji: '🌐', name: 'Navegador Seguro',       desc: 'Você identificou todos os navegadores pelas suas descrições!' },
     quiz_4:  { emoji: '🖌️', name: 'Artista Digital',        desc: 'Você acertou todas as perguntas do Quiz do Módulo 4!' },
     tf_4:    { emoji: '📂', name: 'Organizador Master',     desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 4!' },
     match_4: { emoji: '🎨', name: 'Criador Digital',        desc: 'Você ligou todos os programas às suas funções corretamente!' },
@@ -511,59 +537,49 @@
     }
   }
 
-  // ── Jogo de Ligar ─────────────────────────────────────────────────────────
-  let selectedLeft = null;
-
-  // Mapa: id do elemento resultado → chave da medalha
-  const matchMedalKey = {
-    'match1-result': 'match_1',
-    'match2-result': 'match_2',
-    'match3-result': 'match_3',
-    'match4-result': 'match_4',
-  };
-
-  function selectMatch(item) {
-    const side = item.dataset.match;
-    if (item.classList.contains('matched-correct')) return;
-
-    if (side === 'left') {
-      document.querySelectorAll('[data-match="left"].selected').forEach(el => el.classList.remove('selected'));
-      item.classList.add('selected');
-      selectedLeft = item;
-    } else if (side === 'right' && selectedLeft) {
-      const leftId  = selectedLeft.dataset.id;
-      const rightId = item.dataset.id;
-
-      if (leftId === rightId) {
-        selectedLeft.classList.remove('selected');
-        selectedLeft.classList.add('matched-correct');
-        item.classList.add('matched-correct');
-        selectedLeft.style.pointerEvents = 'none';
-        item.style.pointerEvents = 'none';
-        updateScore(5);
-
-        const container = item.closest('.match-container');
-        const total     = container.querySelectorAll('[data-match="left"]').length;
-        const matched   = container.querySelectorAll('.matched-correct').length / 2;
-
-        if (matched === total) {
-          const resultEl = container.nextElementSibling;
-          if (resultEl) {
-            resultEl.innerHTML = '🏆 Parabéns! Você ligou tudo corretamente!';
-            resultEl.style.color = '#28a745';
-            setTimeout(() => awardMedal(matchMedalKey[resultEl.id]), 400);
-          }
-        }
-      } else {
-        selectedLeft.classList.add('matched-wrong');
-        item.classList.add('matched-wrong');
-        setTimeout(() => {
-          selectedLeft.classList.remove('matched-wrong', 'selected');
-          item.classList.remove('matched-wrong');
-        }, 500);
-      }
-      selectedLeft = null;
+  // ── Dropdown Match ────────────────────────────────────────────────────────
+  function checkDropdownMatch(dmId, medalKey) {
+    const container = document.getElementById(dmId);
+    const selects = container.querySelectorAll('.dm-select');
+    let allFilled = true, allCorrect = true;
+    selects.forEach(sel => { if (!sel.value) allFilled = false; });
+    const res = document.getElementById(dmId + '-result');
+    if (!allFilled) {
+      res.innerHTML = '⚠️ Selecione uma resposta para cada item antes de verificar!';
+      res.style.color = '#d4a800';
+      return;
     }
+    selects.forEach(sel => {
+      sel.classList.remove('correct', 'wrong');
+      if (sel.value === sel.dataset.correct) sel.classList.add('correct');
+      else { sel.classList.add('wrong'); allCorrect = false; }
+    });
+    if (allCorrect) {
+      selects.forEach(sel => sel.disabled = true);
+      res.innerHTML = '🏆 Parabéns! Você acertou tudo!';
+      res.style.color = '#28a745';
+      updateScore(5 * selects.length);
+      setTimeout(() => awardMedal(medalKey), 400);
+    } else {
+      res.innerHTML = '❌ Algumas respostas estão erradas. Corrija e tente novamente!';
+      res.style.color = '#dc3545';
+      setTimeout(() => {
+        selects.forEach(sel => { if (sel.classList.contains('wrong')) { sel.classList.remove('wrong'); sel.value = ''; } });
+        res.innerHTML = '';
+      }, 2000);
+    }
+  }
+
+  function revealDropdownMatch(dmId) {
+    const container = document.getElementById(dmId);
+    if (!container) return;
+    container.querySelectorAll('.dm-select').forEach(sel => {
+      sel.value = sel.dataset.correct;
+      sel.classList.add('correct');
+      sel.disabled = true;
+    });
+    const res = document.getElementById(dmId + '-result');
+    if (res) { res.innerHTML = '🏆 Você já conquistou esta medalha! Veja as respostas corretas acima.'; res.style.color = '#28a745'; }
   }
 
   // ── Navegação ──────────────────────────────────────────────────────────────

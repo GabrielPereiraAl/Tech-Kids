@@ -115,27 +115,56 @@
       </div>
     </div>
 
-    <!-- Atividade 4.2 - Correspondência Programas -->
+    <!-- Atividade 4.2 - Qual programa usar? -->
     <div class="activity-card">
-      <div class="activity-title">🔗 Combine os Programas!</div>
-      <div class="activity-subtitle">Ligue o programa à sua função • 4 pares</div>
-      <div class="match-container">
-        <div class="match-col">
-          <h6>Programa</h6>
-          <div class="match-item" data-match="left" data-id="word" onclick="selectMatch(this)">📝 Word</div>
-          <div class="match-item" data-match="left" data-id="paint" onclick="selectMatch(this)">🎨 Paint</div>
-          <div class="match-item" data-match="left" data-id="excel" onclick="selectMatch(this)">📊 Excel</div>
-          <div class="match-item" data-match="left" data-id="ppt" onclick="selectMatch(this)">🖼️ PowerPoint</div>
+      <div class="activity-title">💻 Qual programa usar?</div>
+      <div class="activity-subtitle">Selecione o programa correto para cada tarefa • 4 pares • 5 pontos cada</div>
+      <div class="dropdown-match" id="dm4">
+        <div class="dm-row">
+          <div class="dm-label">Escrever textos e documentos</div>
+          <select class="dm-select" data-correct="word">
+            <option value="">— Selecione —</option>
+            <option value="word">📝 Word</option>
+            <option value="paint">🎨 Paint</option>
+            <option value="excel">📊 Excel</option>
+            <option value="ppt">🖼️ PowerPoint</option>
+          </select>
         </div>
-        <div class="match-col">
-          <h6>Função Principal</h6>
-          <div class="match-item" data-match="right" data-id="excel" onclick="selectMatch(this)">Fazer tabelas e cálculos</div>
-          <div class="match-item" data-match="right" data-id="ppt" onclick="selectMatch(this)">Criar slides e apresentações</div>
-          <div class="match-item" data-match="right" data-id="word" onclick="selectMatch(this)">Escrever textos e documentos</div>
-          <div class="match-item" data-match="right" data-id="paint" onclick="selectMatch(this)">Desenhar e colorir imagens</div>
+        <div class="dm-row">
+          <div class="dm-label">Desenhar e colorir imagens</div>
+          <select class="dm-select" data-correct="paint">
+            <option value="">— Selecione —</option>
+            <option value="word">📝 Word</option>
+            <option value="paint">🎨 Paint</option>
+            <option value="excel">📊 Excel</option>
+            <option value="ppt">🖼️ PowerPoint</option>
+          </select>
+        </div>
+        <div class="dm-row">
+          <div class="dm-label">Fazer tabelas e cálculos</div>
+          <select class="dm-select" data-correct="excel">
+            <option value="">— Selecione —</option>
+            <option value="word">📝 Word</option>
+            <option value="paint">🎨 Paint</option>
+            <option value="excel">📊 Excel</option>
+            <option value="ppt">🖼️ PowerPoint</option>
+          </select>
+        </div>
+        <div class="dm-row">
+          <div class="dm-label">Criar slides e apresentações</div>
+          <select class="dm-select" data-correct="ppt">
+            <option value="">— Selecione —</option>
+            <option value="word">📝 Word</option>
+            <option value="paint">🎨 Paint</option>
+            <option value="excel">📊 Excel</option>
+            <option value="ppt">🖼️ PowerPoint</option>
+          </select>
         </div>
       </div>
-      <div id="match4-result" style="margin-top:1rem;font-weight:700;"></div>
+      <div style="margin-top:1.2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+        <button class="check-btn" onclick="checkDropdownMatch('dm4','match_4')">✅ Verificar respostas</button>
+        <div id="dm4-result" style="font-weight:700;font-size:0.95rem;"></div>
+      </div>
     </div>
 
     <!-- Atividade 4.3 - Verdadeiro ou Falso -->
@@ -232,10 +261,7 @@
       if (def && _earned.has(def.name))
         ids.forEach(qId => { if (!answeredQuestions.has(qId)) revealCorrectAnswer(qId, gKey); });
     });
-    ['match_1','match_2','match_3','match_4'].forEach(key => {
-      const def = medalDefs[key];
-      if (def && _earned.has(def.name)) revealMatchPairs('match' + key.split('_')[1] + '-result');
-    });
+    if (medalDefs['match_4'] && _earned.has(medalDefs['match_4'].name)) revealDropdownMatch('dm4');
   });
 
   // ── Mapa completo de medalhas ──────────────────────────────────────────────
@@ -254,7 +280,7 @@
     match_3: { emoji: '🌐', name: 'Navegador Seguro',       desc: 'Você combinou todos os navegadores às suas descrições!' },
     quiz_4:  { emoji: '🖌️', name: 'Artista Digital',        desc: 'Você acertou todas as perguntas do Quiz do Módulo 4!' },
     tf_4:    { emoji: '📂', name: 'Organizador Master',     desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 4!' },
-    match_4: { emoji: '🎨', name: 'Criador Digital',        desc: 'Você ligou todos os programas às suas funções corretamente!' },
+    match_4: { emoji: '🎨', name: 'Criador Digital',        desc: 'Você identificou o programa certo para cada tarefa!' },
   };
 
   // IDs de todas as questões por grupo (quiz e tf por módulo)
@@ -510,59 +536,49 @@
     }
   }
 
-  // ── Jogo de Ligar ─────────────────────────────────────────────────────────
-  let selectedLeft = null;
-
-  // Mapa: id do elemento resultado → chave da medalha
-  const matchMedalKey = {
-    'match1-result': 'match_1',
-    'match2-result': 'match_2',
-    'match3-result': 'match_3',
-    'match4-result': 'match_4',
-  };
-
-  function selectMatch(item) {
-    const side = item.dataset.match;
-    if (item.classList.contains('matched-correct')) return;
-
-    if (side === 'left') {
-      document.querySelectorAll('[data-match="left"].selected').forEach(el => el.classList.remove('selected'));
-      item.classList.add('selected');
-      selectedLeft = item;
-    } else if (side === 'right' && selectedLeft) {
-      const leftId  = selectedLeft.dataset.id;
-      const rightId = item.dataset.id;
-
-      if (leftId === rightId) {
-        selectedLeft.classList.remove('selected');
-        selectedLeft.classList.add('matched-correct');
-        item.classList.add('matched-correct');
-        selectedLeft.style.pointerEvents = 'none';
-        item.style.pointerEvents = 'none';
-        updateScore(5);
-
-        const container = item.closest('.match-container');
-        const total     = container.querySelectorAll('[data-match="left"]').length;
-        const matched   = container.querySelectorAll('.matched-correct').length / 2;
-
-        if (matched === total) {
-          const resultEl = container.nextElementSibling;
-          if (resultEl) {
-            resultEl.innerHTML = '🏆 Parabéns! Você ligou tudo corretamente!';
-            resultEl.style.color = '#28a745';
-            setTimeout(() => awardMedal(matchMedalKey[resultEl.id]), 400);
-          }
-        }
-      } else {
-        selectedLeft.classList.add('matched-wrong');
-        item.classList.add('matched-wrong');
-        setTimeout(() => {
-          selectedLeft.classList.remove('matched-wrong', 'selected');
-          item.classList.remove('matched-wrong');
-        }, 500);
-      }
-      selectedLeft = null;
+  // ── Dropdown Match ────────────────────────────────────────────────────────
+  function checkDropdownMatch(dmId, medalKey) {
+    const container = document.getElementById(dmId);
+    const selects = container.querySelectorAll('.dm-select');
+    let allFilled = true, allCorrect = true;
+    selects.forEach(sel => { if (!sel.value) allFilled = false; });
+    const res = document.getElementById(dmId + '-result');
+    if (!allFilled) {
+      res.innerHTML = '⚠️ Selecione uma resposta para cada item antes de verificar!';
+      res.style.color = '#d4a800';
+      return;
     }
+    selects.forEach(sel => {
+      sel.classList.remove('correct', 'wrong');
+      if (sel.value === sel.dataset.correct) sel.classList.add('correct');
+      else { sel.classList.add('wrong'); allCorrect = false; }
+    });
+    if (allCorrect) {
+      selects.forEach(sel => sel.disabled = true);
+      res.innerHTML = '🏆 Parabéns! Você acertou tudo!';
+      res.style.color = '#28a745';
+      updateScore(5 * selects.length);
+      setTimeout(() => awardMedal(medalKey), 400);
+    } else {
+      res.innerHTML = '❌ Algumas respostas estão erradas. Corrija e tente novamente!';
+      res.style.color = '#dc3545';
+      setTimeout(() => {
+        selects.forEach(sel => { if (sel.classList.contains('wrong')) { sel.classList.remove('wrong'); sel.value = ''; } });
+        res.innerHTML = '';
+      }, 2000);
+    }
+  }
+
+  function revealDropdownMatch(dmId) {
+    const container = document.getElementById(dmId);
+    if (!container) return;
+    container.querySelectorAll('.dm-select').forEach(sel => {
+      sel.value = sel.dataset.correct;
+      sel.classList.add('correct');
+      sel.disabled = true;
+    });
+    const res = document.getElementById(dmId + '-result');
+    if (res) { res.innerHTML = '🏆 Você já conquistou esta medalha! Veja as respostas corretas acima.'; res.style.color = '#28a745'; }
   }
 
   // ── Navegação ──────────────────────────────────────────────────────────────

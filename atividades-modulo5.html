@@ -113,27 +113,56 @@
     </div>
   </div>
 
-  <!-- Atividade 5.2 - Correspondência -->
+  <!-- Atividade 5.2 - Que tipo de IA é essa? -->
   <div class="activity-card">
-    <div class="activity-title">🔗 Combine a IA com seu uso!</div>
-    <div class="activity-subtitle">Ligue o exemplo de IA à sua função • 4 pares</div>
-    <div class="match-container">
-      <div class="match-col">
-        <h6>Exemplo de IA</h6>
-        <div class="match-item" data-match="left" data-id="assistente" onclick="selectMatch(this)">🔊 Assistente de voz</div>
-        <div class="match-item" data-match="left" data-id="recomendacao" onclick="selectMatch(this)">🎵 Recomendação</div>
-        <div class="match-item" data-match="left" data-id="traducao" onclick="selectMatch(this)">🌐 Tradutor automático</div>
-        <div class="match-item" data-match="left" data-id="gerativa" onclick="selectMatch(this)">🖼️ IA Generativa</div>
+    <div class="activity-title">🤖 Que tipo de IA é essa?</div>
+    <div class="activity-subtitle">Selecione o tipo correto de IA para cada função • 4 pares • 5 pontos cada</div>
+    <div class="dropdown-match" id="dm5">
+      <div class="dm-row">
+        <div class="dm-label">Responder perguntas por voz</div>
+        <select class="dm-select" data-correct="assistente">
+          <option value="">— Selecione —</option>
+          <option value="assistente">🔊 Assistente de voz</option>
+          <option value="recomendacao">🎵 Recomendação</option>
+          <option value="traducao">🌐 Tradutor automático</option>
+          <option value="gerativa">🖼️ IA Generativa</option>
+        </select>
       </div>
-      <div class="match-col">
-        <h6>Para que serve</h6>
-        <div class="match-item" data-match="right" data-id="gerativa" onclick="selectMatch(this)">Criar imagens, textos e músicas</div>
-        <div class="match-item" data-match="right" data-id="assistente" onclick="selectMatch(this)">Responder perguntas por voz</div>
-        <div class="match-item" data-match="right" data-id="traducao" onclick="selectMatch(this)">Converter um idioma em outro</div>
-        <div class="match-item" data-match="right" data-id="recomendacao" onclick="selectMatch(this)">Sugerir músicas ou filmes</div>
+      <div class="dm-row">
+        <div class="dm-label">Sugerir músicas ou filmes</div>
+        <select class="dm-select" data-correct="recomendacao">
+          <option value="">— Selecione —</option>
+          <option value="assistente">🔊 Assistente de voz</option>
+          <option value="recomendacao">🎵 Recomendação</option>
+          <option value="traducao">🌐 Tradutor automático</option>
+          <option value="gerativa">🖼️ IA Generativa</option>
+        </select>
+      </div>
+      <div class="dm-row">
+        <div class="dm-label">Converter um idioma em outro</div>
+        <select class="dm-select" data-correct="traducao">
+          <option value="">— Selecione —</option>
+          <option value="assistente">🔊 Assistente de voz</option>
+          <option value="recomendacao">🎵 Recomendação</option>
+          <option value="traducao">🌐 Tradutor automático</option>
+          <option value="gerativa">🖼️ IA Generativa</option>
+        </select>
+      </div>
+      <div class="dm-row">
+        <div class="dm-label">Criar imagens, textos e músicas</div>
+        <select class="dm-select" data-correct="gerativa">
+          <option value="">— Selecione —</option>
+          <option value="assistente">🔊 Assistente de voz</option>
+          <option value="recomendacao">🎵 Recomendação</option>
+          <option value="traducao">🌐 Tradutor automático</option>
+          <option value="gerativa">🖼️ IA Generativa</option>
+        </select>
       </div>
     </div>
-    <div id="match5-result" style="margin-top:1rem;font-weight:700;"></div>
+    <div style="margin-top:1.2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+      <button class="check-btn" onclick="checkDropdownMatch('dm5','match_5')">✅ Verificar respostas</button>
+      <div id="dm5-result" style="font-weight:700;font-size:0.95rem;"></div>
+    </div>
   </div>
 
   <!-- Atividade 5.3 - Verdadeiro ou Falso -->
@@ -230,13 +259,13 @@
       if (def && _earned.has(def.name))
         ids.forEach(qId => { if (!answeredQuestions.has(qId)) revealCorrectAnswer(qId, gKey); });
     });
-    if (_earned.has(medalDefs['match_5'].name)) revealMatchPairs('match5-result');
+    if (medalDefs['match_5'] && _earned.has(medalDefs['match_5'].name)) revealDropdownMatch('dm5');
   });
 
   const medalDefs = {
     quiz_5:  { emoji: '🤖', name: 'Especialista em IA',   desc: 'Você acertou todas as perguntas do Quiz do Módulo 5!' },
     tf_5:    { emoji: '💡', name: 'Pensador do Futuro',    desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 5!' },
-    match_5: { emoji: '🚀', name: 'Explorador Digital',   desc: 'Você combinou todos os usos de IA corretamente!' },
+    match_5: { emoji: '🚀', name: 'Explorador Digital',   desc: 'Você identificou o tipo correto de cada uso de IA!' },
   };
 
   const quizGroups = {
@@ -423,43 +452,49 @@
     }
   }
 
-  let selectedLeft = null;
-  function selectMatch(item) {
-    const side = item.dataset.match;
-    if (item.classList.contains('matched-correct')) return;
-    if (side === 'left') {
-      document.querySelectorAll('[data-match="left"].selected').forEach(el => el.classList.remove('selected'));
-      item.classList.add('selected');
-      selectedLeft = item;
-    } else if (side === 'right' && selectedLeft) {
-      if (selectedLeft.dataset.id === item.dataset.id) {
-        selectedLeft.classList.remove('selected');
-        selectedLeft.classList.add('matched-correct');
-        item.classList.add('matched-correct');
-        selectedLeft.style.pointerEvents = 'none';
-        item.style.pointerEvents = 'none';
-        updateScore(5);
-        const container = item.closest('.match-container');
-        const total   = container.querySelectorAll('[data-match="left"]').length;
-        const matched = container.querySelectorAll('.matched-correct').length / 2;
-        if (matched === total) {
-          const resultEl = container.nextElementSibling;
-          if (resultEl) {
-            resultEl.innerHTML = '🏆 Parabéns! Você ligou tudo corretamente!';
-            resultEl.style.color = '#28a745';
-            setTimeout(() => awardMedal('match_5'), 400);
-          }
-        }
-      } else {
-        selectedLeft.classList.add('matched-wrong');
-        item.classList.add('matched-wrong');
-        setTimeout(() => {
-          selectedLeft.classList.remove('matched-wrong', 'selected');
-          item.classList.remove('matched-wrong');
-        }, 500);
-      }
-      selectedLeft = null;
+  // ── Dropdown Match ────────────────────────────────────────────────────────
+  function checkDropdownMatch(dmId, medalKey) {
+    const container = document.getElementById(dmId);
+    const selects = container.querySelectorAll('.dm-select');
+    let allFilled = true, allCorrect = true;
+    selects.forEach(sel => { if (!sel.value) allFilled = false; });
+    const res = document.getElementById(dmId + '-result');
+    if (!allFilled) {
+      res.innerHTML = '⚠️ Selecione uma resposta para cada item antes de verificar!';
+      res.style.color = '#d4a800';
+      return;
     }
+    selects.forEach(sel => {
+      sel.classList.remove('correct', 'wrong');
+      if (sel.value === sel.dataset.correct) sel.classList.add('correct');
+      else { sel.classList.add('wrong'); allCorrect = false; }
+    });
+    if (allCorrect) {
+      selects.forEach(sel => sel.disabled = true);
+      res.innerHTML = '🏆 Parabéns! Você acertou tudo!';
+      res.style.color = '#28a745';
+      updateScore(5 * selects.length);
+      setTimeout(() => awardMedal(medalKey), 400);
+    } else {
+      res.innerHTML = '❌ Algumas respostas estão erradas. Corrija e tente novamente!';
+      res.style.color = '#dc3545';
+      setTimeout(() => {
+        selects.forEach(sel => { if (sel.classList.contains('wrong')) { sel.classList.remove('wrong'); sel.value = ''; } });
+        res.innerHTML = '';
+      }, 2000);
+    }
+  }
+
+  function revealDropdownMatch(dmId) {
+    const container = document.getElementById(dmId);
+    if (!container) return;
+    container.querySelectorAll('.dm-select').forEach(sel => {
+      sel.value = sel.dataset.correct;
+      sel.classList.add('correct');
+      sel.disabled = true;
+    });
+    const res = document.getElementById(dmId + '-result');
+    if (res) { res.innerHTML = '🏆 Você já conquistou esta medalha! Veja as respostas corretas acima.'; res.style.color = '#28a745'; }
   }
 
   function toggleNav() {

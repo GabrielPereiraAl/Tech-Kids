@@ -166,29 +166,71 @@
       </div>
     </div>
 
-    <!-- Atividade 1.3 - Correspondência -->
+    <!-- Atividade 1.3 - Qual é a função? -->
     <div class="activity-card">
-      <div class="activity-title">🔗 Ligue os Conceitos!</div>
-      <div class="activity-subtitle">Clique em um item da esquerda e depois no par correto da direita • 5 pares</div>
-      <div class="match-container">
-        <div class="match-col">
-          <h6>Parte do Computador</h6>
-          <div class="match-item" data-match="left" data-id="monitor" onclick="selectMatch(this)">🖥️ Monitor</div>
-          <div class="match-item" data-match="left" data-id="teclado" onclick="selectMatch(this)">⌨️ Teclado</div>
-          <div class="match-item" data-match="left" data-id="mouse" onclick="selectMatch(this)">🖱️ Mouse</div>
-          <div class="match-item" data-match="left" data-id="ram" onclick="selectMatch(this)">⚡ RAM</div>
-          <div class="match-item" data-match="left" data-id="hd" onclick="selectMatch(this)">💾 HD</div>
+      <div class="activity-title">🎯 Qual é a função?</div>
+      <div class="activity-subtitle">Selecione a função correta de cada parte do computador • 5 pares • 5 pontos cada</div>
+      <div class="dropdown-match" id="dm1">
+        <div class="dm-row">
+          <div class="dm-label">🖥️ Monitor</div>
+          <select class="dm-select" data-correct="monitor">
+            <option value="">— Selecione —</option>
+            <option value="teclado">Digitar letras e números</option>
+            <option value="mouse">Mover o cursor e clicar</option>
+            <option value="monitor">Mostrar a imagem na tela</option>
+            <option value="ram">Memória temporária de trabalho</option>
+            <option value="hd">Guardar arquivos permanentemente</option>
+          </select>
         </div>
-        <div class="match-col">
-          <h6>Função</h6>
-          <div class="match-item" data-match="right" data-id="mouse" onclick="selectMatch(this)">Mover o cursor e clicar</div>
-          <div class="match-item" data-match="right" data-id="hd" onclick="selectMatch(this)">Guardar arquivos permanentemente</div>
-          <div class="match-item" data-match="right" data-id="monitor" onclick="selectMatch(this)">Mostrar a imagem na tela</div>
-          <div class="match-item" data-match="right" data-id="ram" onclick="selectMatch(this)">Memória temporária de trabalho</div>
-          <div class="match-item" data-match="right" data-id="teclado" onclick="selectMatch(this)">Digitar letras e números</div>
+        <div class="dm-row">
+          <div class="dm-label">⌨️ Teclado</div>
+          <select class="dm-select" data-correct="teclado">
+            <option value="">— Selecione —</option>
+            <option value="teclado">Digitar letras e números</option>
+            <option value="mouse">Mover o cursor e clicar</option>
+            <option value="monitor">Mostrar a imagem na tela</option>
+            <option value="ram">Memória temporária de trabalho</option>
+            <option value="hd">Guardar arquivos permanentemente</option>
+          </select>
+        </div>
+        <div class="dm-row">
+          <div class="dm-label">🖱️ Mouse</div>
+          <select class="dm-select" data-correct="mouse">
+            <option value="">— Selecione —</option>
+            <option value="teclado">Digitar letras e números</option>
+            <option value="mouse">Mover o cursor e clicar</option>
+            <option value="monitor">Mostrar a imagem na tela</option>
+            <option value="ram">Memória temporária de trabalho</option>
+            <option value="hd">Guardar arquivos permanentemente</option>
+          </select>
+        </div>
+        <div class="dm-row">
+          <div class="dm-label">⚡ RAM</div>
+          <select class="dm-select" data-correct="ram">
+            <option value="">— Selecione —</option>
+            <option value="teclado">Digitar letras e números</option>
+            <option value="mouse">Mover o cursor e clicar</option>
+            <option value="monitor">Mostrar a imagem na tela</option>
+            <option value="ram">Memória temporária de trabalho</option>
+            <option value="hd">Guardar arquivos permanentemente</option>
+          </select>
+        </div>
+        <div class="dm-row">
+          <div class="dm-label">💾 HD</div>
+          <select class="dm-select" data-correct="hd">
+            <option value="">— Selecione —</option>
+            <option value="teclado">Digitar letras e números</option>
+            <option value="mouse">Mover o cursor e clicar</option>
+            <option value="monitor">Mostrar a imagem na tela</option>
+            <option value="ram">Memória temporária de trabalho</option>
+            <option value="hd">Guardar arquivos permanentemente</option>
+          </select>
         </div>
       </div>
-      <div id="match1-result" style="margin-top:1rem;font-weight:700;"></div>
+      <div style="margin-top:1.2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+        <button class="check-btn" onclick="checkDropdownMatch('dm1','match_1')">✅ Verificar respostas</button>
+        <div id="dm1-result" style="font-weight:700;font-size:0.95rem;"></div>
+      </div>
     </div>
 </div>
 
@@ -235,10 +277,7 @@
       if (def && _earned.has(def.name))
         ids.forEach(qId => { if (!answeredQuestions.has(qId)) revealCorrectAnswer(qId, gKey); });
     });
-    ['match_1','match_2','match_3','match_4'].forEach(key => {
-      const def = medalDefs[key];
-      if (def && _earned.has(def.name)) revealMatchPairs('match' + key.split('_')[1] + '-result');
-    });
+    if (medalDefs['match_1'] && _earned.has(medalDefs['match_1'].name)) revealDropdownMatch('dm1');
   });
 
   // ── Mapa completo de medalhas ──────────────────────────────────────────────
@@ -248,7 +287,7 @@
   const medalDefs = {
     quiz_1:  { emoji: '🌟', name: 'Gênio do Computador',   desc: 'Você acertou todas as perguntas do Quiz do Módulo 1!' },
     tf_1:    { emoji: '✅', name: 'Detetive do Computador', desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 1!' },
-    match_1: { emoji: '🖥️', name: 'Mestre das Peças',      desc: 'Você ligou todas as partes do computador às suas funções!' },
+    match_1: { emoji: '🖥️', name: 'Mestre das Peças',      desc: 'Você identificou a função de cada parte do computador corretamente!' },
     quiz_2:  { emoji: '⚡', name: 'Craque do Teclado',     desc: 'Você acertou todas as perguntas do Quiz do Módulo 2!' },
     tf_2:    { emoji: '🎹', name: 'Dedo de Ouro',           desc: 'Você acertou todos os Verdadeiro ou Falso do Módulo 2!' },
     match_2: { emoji: '⌨️', name: 'Rei dos Atalhos',        desc: 'Você combinou todos os atalhos de teclado às suas funções!' },
@@ -513,59 +552,49 @@
     }
   }
 
-  // ── Jogo de Ligar ─────────────────────────────────────────────────────────
-  let selectedLeft = null;
-
-  // Mapa: id do elemento resultado → chave da medalha
-  const matchMedalKey = {
-    'match1-result': 'match_1',
-    'match2-result': 'match_2',
-    'match3-result': 'match_3',
-    'match4-result': 'match_4',
-  };
-
-  function selectMatch(item) {
-    const side = item.dataset.match;
-    if (item.classList.contains('matched-correct')) return;
-
-    if (side === 'left') {
-      document.querySelectorAll('[data-match="left"].selected').forEach(el => el.classList.remove('selected'));
-      item.classList.add('selected');
-      selectedLeft = item;
-    } else if (side === 'right' && selectedLeft) {
-      const leftId  = selectedLeft.dataset.id;
-      const rightId = item.dataset.id;
-
-      if (leftId === rightId) {
-        selectedLeft.classList.remove('selected');
-        selectedLeft.classList.add('matched-correct');
-        item.classList.add('matched-correct');
-        selectedLeft.style.pointerEvents = 'none';
-        item.style.pointerEvents = 'none';
-        updateScore(5);
-
-        const container = item.closest('.match-container');
-        const total     = container.querySelectorAll('[data-match="left"]').length;
-        const matched   = container.querySelectorAll('.matched-correct').length / 2;
-
-        if (matched === total) {
-          const resultEl = container.nextElementSibling;
-          if (resultEl) {
-            resultEl.innerHTML = '🏆 Parabéns! Você ligou tudo corretamente!';
-            resultEl.style.color = '#28a745';
-            setTimeout(() => awardMedal(matchMedalKey[resultEl.id]), 400);
-          }
-        }
-      } else {
-        selectedLeft.classList.add('matched-wrong');
-        item.classList.add('matched-wrong');
-        setTimeout(() => {
-          selectedLeft.classList.remove('matched-wrong', 'selected');
-          item.classList.remove('matched-wrong');
-        }, 500);
-      }
-      selectedLeft = null;
+  // ── Dropdown Match ────────────────────────────────────────────────────────
+  function checkDropdownMatch(dmId, medalKey) {
+    const container = document.getElementById(dmId);
+    const selects = container.querySelectorAll('.dm-select');
+    let allFilled = true, allCorrect = true;
+    selects.forEach(sel => { if (!sel.value) allFilled = false; });
+    const res = document.getElementById(dmId + '-result');
+    if (!allFilled) {
+      res.innerHTML = '⚠️ Selecione uma resposta para cada item antes de verificar!';
+      res.style.color = '#d4a800';
+      return;
     }
+    selects.forEach(sel => {
+      sel.classList.remove('correct', 'wrong');
+      if (sel.value === sel.dataset.correct) sel.classList.add('correct');
+      else { sel.classList.add('wrong'); allCorrect = false; }
+    });
+    if (allCorrect) {
+      selects.forEach(sel => sel.disabled = true);
+      res.innerHTML = '🏆 Parabéns! Você acertou tudo!';
+      res.style.color = '#28a745';
+      updateScore(5 * selects.length);
+      setTimeout(() => awardMedal(medalKey), 400);
+    } else {
+      res.innerHTML = '❌ Algumas respostas estão erradas. Corrija e tente novamente!';
+      res.style.color = '#dc3545';
+      setTimeout(() => {
+        selects.forEach(sel => { if (sel.classList.contains('wrong')) { sel.classList.remove('wrong'); sel.value = ''; } });
+        res.innerHTML = '';
+      }, 2000);
+    }
+  }
+
+  function revealDropdownMatch(dmId) {
+    const container = document.getElementById(dmId);
+    if (!container) return;
+    container.querySelectorAll('.dm-select').forEach(sel => {
+      sel.value = sel.dataset.correct;
+      sel.classList.add('correct');
+      sel.disabled = true;
+    });
+    const res = document.getElementById(dmId + '-result');
+    if (res) { res.innerHTML = '🏆 Você já conquistou esta medalha! Veja as respostas corretas acima.'; res.style.color = '#28a745'; }
   }
 
   // ── Navegação ──────────────────────────────────────────────────────────────
